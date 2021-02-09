@@ -644,6 +644,50 @@ function Update-Version {
     $doc.Save($ProjectFileName)
 }
 
+function Get-NextVersion {
+    param (
+        [System.String]
+        $Version,
+
+        [System.String]
+        [ValidateSet("Major", "Minor", "Build", "Revision")]
+        $ValueType
+    )
+
+    
+
+    $avMajor, $avMinor, $avBuild, $avRevision = $version.Split(".")
+    $avMajor = [System.String]::IsNullOrWhiteSpace($avMajor) ? "0" : $avMajor
+    $avMinor = [System.String]::IsNullOrWhiteSpace($avMinor) ? "0" : $avMinor
+    $avBuild = [System.String]::IsNullOrWhiteSpace($avBuild) ? "0" : $avBuild
+    $avRevision = [System.String]::IsNullOrWhiteSpace($avRevision) ? "0" : $avRevision
+    switch ($ValueType) {
+        ("Major") {  
+            $avMajor = [Convert]::ToInt32($avMajor, 10) + 1;
+            $avMinor = 0
+            $avBuild = 0
+            $avRevision = 0
+        }
+        ("Minor") {  
+            $avMinor = [Convert]::ToInt32($avMinor, 10) + 1;
+            $avBuild = 0
+            $avRevision = 0
+        }
+        ("Build") {  
+            $avBuild = [Convert]::ToInt32($avBuild, 10) + 1;
+            $avRevision = 0
+        }
+        ("Revision") {  
+            $avRevision = [Convert]::ToInt32($avRevision, 10) + 1;
+        }
+        Default {
+            Write-Error "Unknown ValueType `"$ValueType`"."
+        }
+    }
+
+    return "$avMajor.$avMinor.$avBuild.$avRevision"
+}
+
 function Read-Key {
     [CmdletBinding()]
     param (
