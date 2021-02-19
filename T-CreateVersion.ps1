@@ -18,6 +18,7 @@ Remove-Item "./release/*.zip" -Force -ErrorAction Ignore
 @(
     "./X-Publish-ProjectPackage.ps1",
     "./Z-CoreFxs.ps1",
+    "./X-PushMe.ps1",
     "./Z-CoreValues.ps1"
 ) | ForEach-Object {
     
