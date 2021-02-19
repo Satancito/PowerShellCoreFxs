@@ -14,10 +14,6 @@ Clear-Host
     
 Write-Host
 Write-InfoMagenta "███ Commit and push "
-Write-InfoBlue "█ Staging files"
-git add -A
-Test-LastExitCode
-git status 
 
 Write-Host
 Write-InfoBlue "█ Commit"
@@ -31,6 +27,9 @@ else {
     $message = [System.Console]::ReadLine();
 }
 
+git add -A
+Test-LastExitCode
+git status 
 git commit -m "$message"
 Write-Host
 Write-InfoBlue "█ Push to remote"
