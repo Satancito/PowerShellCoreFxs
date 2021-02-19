@@ -1,3 +1,10 @@
+$XCoreValues = Get-Item "./Z-CoreValues*.ps1"
+if (-not (Test-Path $XCoreValues -PathType Leaf)) {
+    Write-InfoYellow "File `"$($PSScriptRoot)/Z-CoreValues*.ps1`" not found."
+}
+    
+Import-Module -Name "$XCoreValues" -Force -NoClobber
+
 function Write-TextColor {
     Param(
         [parameter(Position = 0, ValueFromPipeline = $true)]
@@ -638,10 +645,12 @@ function Update-Version {
             Write-Error "Unknown ValueType `"$ValueType`"."
         }
     }
-
-    $version.InnerText = "$avMajor.$avMinor.$avBuild.$avRevision"
+    $result = "$avMajor.$avMinor.$avBuild.$avRevision"
+    $version.InnerText = $result
 
     $doc.Save($ProjectFileName)
+
+    return $result
 }
 
 function Get-NextVersion {
@@ -725,13 +734,13 @@ function Get-VariableName {
         $Variable
     )
     $Line = @(Get-PSCallStack)[-2].InvocationInfo.Line
-    if($Line -match '\$(?<varName>[\w]+)\s*$'){ 
+    if ($Line -match '\$(?<varName>[\w]+)\s*$') { 
         return $Matches['varName'] 
     }
 } 
 
 function Test-LastExitCode {
-    if(($LASTEXITCODE -ne 0) -or (-not $?)){
+    if (($LASTEXITCODE -ne 0) -or (-not $?)) {
         Get-Error
         Write-Host "ERROR: When execute last command. Check and try again. ErrorCode = $($LASTEXITCODE)." -ForegroundColor Red
         exit
