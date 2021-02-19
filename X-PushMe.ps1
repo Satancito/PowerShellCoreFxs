@@ -2,7 +2,6 @@
 $ErrorActionPreference = "Stop"
 Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 
-[System.String] $project = Get-Item "./*.csproj"
 Clear-Host
     
 Write-Host
