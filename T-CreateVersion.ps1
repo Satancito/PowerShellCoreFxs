@@ -9,7 +9,7 @@ param (
 $item = Get-Item "./Z-CoreFxs.ps1"
 Import-Module -Name "$item" -Force -NoClobber
 
-$version = Get-Content ".\Version.txt"
+$version = Get-Content "./Version.txt"
 
 $version = Get-NextVersion $version $ValueType
 
