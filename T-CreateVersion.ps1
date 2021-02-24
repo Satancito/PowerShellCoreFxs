@@ -16,9 +16,11 @@ $version = Get-NextVersion $version $ValueType
 Remove-Item "./release/*.ps1" -Force -ErrorAction Ignore
 Remove-Item "./release/*.zip" -Force -ErrorAction Ignore
 @(
+    "./X-Edit-ProjectSecrets.ps1",
     "./X-Publish-ProjectPackage.ps1",
+    "./X-Set-ProjectSecrets.ps1",
+    "./X-Push-ProjectToRemote.ps1",
     "./Z-CoreFxs.ps1",
-    "./X-PushMe.ps1",
     "./Z-CoreValues.ps1"
 ) | ForEach-Object {
     
