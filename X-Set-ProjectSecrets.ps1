@@ -1,11 +1,10 @@
 $ErrorActionPreference = "Stop"
 Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 
-$ProjectName = "$(Get-Item -Path "./*.csproj" | Split-Path -Leaf)".Replace(".csproj", [String]::Empty)
-$userHome = Get-UserHome
-$SecretsFileName = "$userHome/$ProjectName.Secrets.json"
+$ProjectName = "$(Get-Item -Path "./*.csproj" | Split-Path -Leaf)" #.Replace(".csproj", [String]::Empty)
+$SecretsFileName = "$(Get-UserHome)/$ProjectName.Secrets.json"
 
-Write-PrettyKeyValue "███ Updating secrets for project" "`"$($ProjectName).csproj`""
+Write-PrettyKeyValue "███ Updating secrets for project" "`"$($ProjectName)`""
 
 
 if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
@@ -19,7 +18,7 @@ if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
 
 Write-Host
 Write-InfoBlue "█ Adding secrets"
-dotnet add "$ProjectName.csproj" package "Microsoft.Extensions.Configuration.UserSecrets"
+dotnet add "$ProjectName" package "Microsoft.Extensions.Configuration.UserSecrets"
 dotnet user-secrets init
 dotnet user-secrets clear
 Get-Content "$SecretsFileName" | dotnet user-secrets set
