@@ -17,9 +17,10 @@ Write-InfoMagenta "███ Commit and push "
 Write-Host
 Write-InfoBlue "█ Commit"
 
+& "./T-CreateVersion.ps1"
+
 if(!$WithCustomMessage.IsPresent)
 {
-    & "./T-CreateVersion.ps1"
     $message = Get-Content ".\Version.txt"
 }
 else {

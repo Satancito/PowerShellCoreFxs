@@ -746,3 +746,33 @@ function Test-LastExitCode {
         exit
     }  
 }
+
+function Select-ValueByPlatform {
+    param (
+        [parameter(Mandatory = $true)]
+        [System.Object]
+        $WindowsValue,
+
+        [parameter(Mandatory = $true)]
+        [System.Object]
+        $LinuxValue,
+
+        [parameter(Mandatory = $true)]
+        [System.Object]
+        $MacOSValue
+
+    )
+    if($IsWindows)
+    {
+        return $WindowsValue
+    }
+    if($IsLinux)
+    {
+        return $LinuxValue
+    }
+    if($IsMacOS)
+    {
+        return $MacOSValue
+    }
+    
+}
