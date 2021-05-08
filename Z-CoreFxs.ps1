@@ -730,11 +730,12 @@ function Get-UserHome {
 function Get-VariableName {
     Param(
         [Parameter()]    
-        [string]
+        [System.Object]
         $Variable
     )
-    $Line = @(Get-PSCallStack)[-2].InvocationInfo.Line
-    if ($Line -match '\$(?<varName>[\w]+)\s*$') { 
+    $Line = @(Get-PSCallStack)[1].Position.Text
+    
+    if ($Line -match '(.*)(Get-VariableName)([ ]+)(-Variable[ ]+)*\$(?<varName>([\w]+:)*[\w]*)(.*)') { #https://regex101.com/r/Uc6asf/1
         return $Matches['varName'] 
     }
 } 
@@ -786,7 +787,6 @@ function Set-LocalEnvironmentVariable {
         $Value
     )
     Set-Item env:$Name -Value "$value" | Out-Null
-    
 }
 
 function Set-PersistentEnvironmentVariable {
