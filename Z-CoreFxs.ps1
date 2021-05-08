@@ -87,7 +87,8 @@ function Write-InfoRed {
         Write-TextColor $Information Red $NoNewLine
     }
 }
-function Write-InfoGreen {
+
+function Write-InfoDarkRed {
     Param(
         [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
@@ -100,7 +101,7 @@ function Write-InfoGreen {
     )
 
     Process {
-        Write-TextColor $Information Green $NoNewLine
+        Write-TextColor $Information DarkRed $NoNewLine
     }
 }
 
@@ -118,6 +119,23 @@ function Write-InfoYellow {
 
     Process {
         Write-TextColor $Information Yellow $NoNewLine
+    }
+}
+
+function Write-InfoDarkYellow {
+    Param(
+        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Object]
+        $Information,
+    
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [Switch]
+        $NoNewLine
+    )
+
+    Process {
+        Write-TextColor $Information DarkYellow $NoNewLine
     }
 }
 
@@ -155,6 +173,23 @@ function Write-InfoDarkGray {
     }
 }
 
+function Write-InfoGreen {
+    Param(
+        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Object]
+        $Information,
+    
+        [parameter(Position = 1, ValueFromPipeline = $false)]
+        [Switch]
+        $NoNewLine
+    )
+
+    Process {
+        Write-TextColor $Information Green $NoNewLine
+    }
+}
+
 function Write-InfoDarkGreen {
     Param(
         [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -189,7 +224,7 @@ function Write-InfoMagenta {
     }
 }
 
-function Write-InfoBlue {
+function Write-DarkMagenta {
     Param(
         [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
@@ -202,7 +237,7 @@ function Write-InfoBlue {
     )
 
     Process {
-        Write-TextColor $Information Blue $NoNewLine
+        Write-TextColor $Information DarkMagenta $NoNewLine
     }
 }
 
@@ -223,6 +258,23 @@ function Write-InfoWhite {
     }
 }
 
+function Write-InfoBlue {
+    Param(
+        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Object]
+        $Information,
+    
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [Switch]
+        $NoNewLine
+    )
+
+    Process {
+        Write-TextColor $Information Blue $NoNewLine
+    }
+}
+
 function Write-InfoDarkBlue {
     Param(
         [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -237,6 +289,57 @@ function Write-InfoDarkBlue {
 
     Process {
         Write-TextColor $Information DarkBlue $NoNewLine
+    }
+}
+
+function Write-InfoCyan {
+    Param(
+        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Object]
+        $Information,
+    
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [Switch]
+        $NoNewLine
+    )
+
+    Process {
+        Write-TextColor $Information Cyan $NoNewLine
+    }
+}
+
+function Write-InfoDarkCyan {
+    Param(
+        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Object]
+        $Information,
+    
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [Switch]
+        $NoNewLine
+    )
+
+    Process {
+        Write-TextColor $Information Cyan $NoNewLine
+    }
+}
+
+function Write-InfoBlack {
+    Param(
+        [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Object]
+        $Information,
+    
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [Switch]
+        $NoNewLine
+    )
+
+    Process {
+        Write-TextColor $Information Black $NoNewLine
     }
 }
 
