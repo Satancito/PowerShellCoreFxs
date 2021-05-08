@@ -762,17 +762,64 @@ function Select-ValueByPlatform {
         $MacOSValue
 
     )
-    if($IsWindows)
-    {
+    if ($IsWindows) {
         return $WindowsValue
     }
-    if($IsLinux)
-    {
+    if ($IsLinux) {
         return $LinuxValue
     }
-    if($IsMacOS)
-    {
+    if ($IsMacOS) {
         return $MacOSValue
     }
     
+    throw "Invalid Platform."
+}
+
+function Set-LocalEnvironmentVariable {
+    param (
+        [Parameter()]
+        [System.String]
+        $Name,
+
+        [Parameter()]
+        [System.String]
+        $Value
+    )
+    Set-Item env:$Name -Value "$value" | Out-Null
+    
+}
+
+function Set-PersistentEnvironmentVariable {
+    param (
+        [Parameter()]
+        [System.String]
+        $Name,
+
+        [Parameter()]
+        [System.String]
+        $Value
+    )
+
+    Set-LocalEnvironmentVariable -Name $Name -Value $Value
+    $pattern = "[ ]*export[ ]+a=[\w]*[ ]*>[ ]*\/dev\/null[ ]*;[ ]*"
+
+    if ($IsWindows) {
+        setx "$Name" "$Value" | Out-Null
+        return
+    }
+    if ($IsLinux) {
+        $content = Get-Content "~/.bashrc" -Raw
+        $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, [String]::Empty);
+        $content += [System.Environment]::NewLine + "export $Name=$Value > /dev/null ;"
+        Set-Content "~/.bashrc" -Value $content -Force
+        return
+    }
+    if ($IsMacOS) {
+        $content = Get-Content "~/.bash_profile" -Raw
+        $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, [String]::Empty);
+        $content += [System.Environment]::NewLine + "export $Name=$Value > /dev/null ;"
+        Set-Content "~/.bash_profile" -Value $content -Force
+        return
+    }
+    throw "Invalid platform."
 }
