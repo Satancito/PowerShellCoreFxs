@@ -33,11 +33,13 @@ Test-LastExitCode
 git status
 git commit -m "$message"
 Write-Host
-Write-InfoBlue "█ Push to remote"
+Write-InfoBlue "█ Pushing to remote"
 git push
 
 Test-LastExitCode
+Write-InfoBlue "█ Creating release in remote"
 $zipfile = "$(Get-Item "./release/*.zip")"
+$version = (Get-Content "./Version.txt").Trim()
 gh release create "$version" "$zipFile" --title "$version"
 
 Write-Host
