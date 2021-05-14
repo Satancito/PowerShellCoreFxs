@@ -3,7 +3,11 @@
 param (
     [Parameter()]
     [Switch]
-    $WithCustomMessage
+    $WithCustomMessage,
+
+    [Parameter()]
+    [Switch]
+    $CreateRelease
 )
 
 $ErrorActionPreference = "Stop"
@@ -19,8 +23,7 @@ Write-InfoBlue "█ Commit"
 
 & "./T-CreateVersion.ps1"
 
-if(!$WithCustomMessage.IsPresent)
-{
+if (!$WithCustomMessage.IsPresent) {
     $message = Get-Content ".\Version.txt"
 }
 else {
@@ -35,21 +38,27 @@ git commit -m "$message"
 Write-Host
 Write-InfoBlue "█ Pushing to remote"
 git push
-
 Test-LastExitCode
-Write-InfoBlue "█ Creating release in remote"
-$zipfile = "$(Get-Item "./release/*.zip")"
-$version = (Get-Content "./Version.txt").Trim()
 
-gh auth status
-if(!(Test-LastExitCode -NoThrowError))
-{
-    gh auth login
+if ($CreateRelease.IsPresent) {
+    Write-InfoBlue "█ Creating release in remote"
+    $zipfile = "$(Get-Item "./release/*.zip")"
+    $version = (Get-Content "./Version.txt").Trim()
+
+    gh auth status
+    if (!(Test-LastExitCode -NoThrowError)) {
+        gh auth login
+    }
+
+    gh release list | ForEach-Object { 
+        $tag = "$_".Split("`t")[2] 
+        gh release delete "$tag" --yes
+        git push --delete origin "$tag"
+    }
+
+    Test-LastExitCode
+    gh release create "$version-Release" "$zipFile" --title "$([System.IO.Path]::GetFileNameWithoutExtension("$(Split-Path $zipfile -Leaf)"))" --notes "$version"
 }
-#gh release list | ForEach-Object { gh release delete "$_".Split("`t")[2]  }
-
-Test-LastExitCode
-gh release create "$version-Release" "$zipFile" --title "$([System.IO.Path]::GetFileNameWithoutExtension("$(Split-Path $zipfile -Leaf)"))" --notes "$version"
 
 Write-Host
 Write-Host
