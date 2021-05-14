@@ -854,7 +854,11 @@ function Test-LastExitCode {
         }
         throw "ERROR: When execute last command. Check and try again. ExitCode = $($LASTEXITCODE)."
     }  
-    return $true
+    if($NoThrowError.IsPresent)
+    {
+        return $true
+    }
+
 }
     
 function Select-ValueByPlatform {
