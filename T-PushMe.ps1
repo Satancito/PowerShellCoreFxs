@@ -36,6 +36,10 @@ Write-Host
 Write-InfoBlue "█ Push to remote"
 git push
 
+Test-LastExitCode
+$zipfile = "$(Get-Item "./release/*.zip")"
+gh release create "$version" --tile "$version" "$zipFile"
+
 Write-Host
 Write-Host
 Write-InfoMagenta "███ Finished all actions"

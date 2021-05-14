@@ -921,7 +921,6 @@ function Set-PersistentEnvironmentVariable {
     )
     
     Set-LocalEnvironmentVariable -Name $Name -Value $Value -Append:$Append
-    $pattern = "\s*export[ \t]+$Name=[\w]*[ \t]*>[ \t]*\/dev\/null[ \t]*;[ \t]*#[ \t]*$Name\s*"
     if ($Append.IsPresent) {
         $value = (Get-Item "env:$Name").Value
     }
@@ -930,18 +929,22 @@ function Set-PersistentEnvironmentVariable {
         setx "$Name" "$Value" | Out-Null
         return
     }
+    $pattern = "\s*export[ \t]+$Name=[\w]*[ \t]*>[ \t]*\/dev\/null[ \t]*;[ \t]*#[ \t]*$Name\s*"
+    
     if ($IsLinux) {
-        $content = Get-Content "~/.bashrc" -Raw
+        $file = "~/.bash_profile"
+        $content = (Get-Content "$file" -ErrorAction Ignore -Raw) + [System.String]::Empty
         $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, [String]::Empty);
         $content += [System.Environment]::NewLine + [System.Environment]::NewLine + "export $Name=$Value > /dev/null ;  # $Name"
-        Set-Content "~/.bashrc" -Value $content -Force
+        Set-Content "$file" -Value $content -Force
         return
     }
     if ($IsMacOS) {
-        $content = Get-Content "~/.bash_profile" -Raw
+        $file = "~/.zprofile"
+        $content = (Get-Content "$file" -ErrorAction Ignore -Raw) + [System.String]::Empty
         $content = [System.Text.RegularExpressions.Regex]::Replace($content, $pattern, [String]::Empty);
-        $content += [System.Environment]::NewLine + [System.Environment]::NewLine + "export $Name=$Value > /dev/null ; # $Name" 
-        Set-Content "~/.bash_profile" -Value $content -Force
+        $content += [System.Environment]::NewLine + [System.Environment]::NewLine + "export $Name=$Value > /dev/null ;  # $Name"
+        Set-Content "$file" -Value $content -Force
         return
     }
     throw "Invalid platform."

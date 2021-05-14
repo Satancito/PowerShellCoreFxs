@@ -29,7 +29,8 @@ Remove-Item "./release/*.zip" -Force -ErrorAction Ignore
     New-Item "./release/$name" -Value "$(Get-Content $_ -Raw)" -Force
 }
 
-Compress-Archive "./release/*.ps1" "./release/PowerShellCoreFxs.$version.zip"
+$zipFile = "./release/PowerShellCoreFxs.$version.zip"
+Compress-Archive "./release/*.ps1" "$zipFile"
 Remove-Item "./release/*.ps1" -Force -ErrorAction Ignore
 
 Set-Content "./Version.txt" -Value $version
