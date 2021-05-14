@@ -46,9 +46,10 @@ if(!(Test-LastExitCode -NoThrowError))
 {
     gh auth login
 }
+#gh release list | ForEach-Object { gh release delete "$_".Split("`t")[2]  }
 
 Test-LastExitCode
-gh release create "$version" "$zipFile" --title "$([System.IO.Path]::GetFileNameWithoutExtension("$(Split-Path $zipfile -Leaf)"))" --notes "$version"
+gh release create "$version-100" "$zipFile" --title "$([System.IO.Path]::GetFileNameWithoutExtension("$(Split-Path $zipfile -Leaf)"))" --notes "$version"
 
 Write-Host
 Write-Host
