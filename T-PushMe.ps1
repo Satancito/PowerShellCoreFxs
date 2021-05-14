@@ -40,7 +40,7 @@ Test-LastExitCode
 Write-InfoBlue "█ Creating release in remote"
 $zipfile = "$(Get-Item "./release/*.zip")"
 $version = (Get-Content "./Version.txt").Trim()
-gh release create "$version" "$zipFile" --title "$version"
+gh release create "$version" "$zipFile" --title "$([System.IO.Path]::GetFileNameWithoutExtension("$(Split-Path $zipfile -Leaf)"))" --notes "$version"
 
 Write-Host
 Write-Host
