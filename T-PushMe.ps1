@@ -38,7 +38,7 @@ git push
 
 Test-LastExitCode
 $zipfile = "$(Get-Item "./release/*.zip")"
-gh release create "$version" --tile "$version" "$zipFile"
+gh release create "$version" "$zipFile" --title "$version"
 
 Write-Host
 Write-Host
