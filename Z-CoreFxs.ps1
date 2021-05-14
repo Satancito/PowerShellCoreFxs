@@ -842,11 +842,19 @@ function Get-VariableName {
 } 
     
 function Test-LastExitCode {
+    param (
+        [Parameter()]
+        [switch]
+        $NoThrowError
+    )
     if (($LASTEXITCODE -ne 0) -or (-not $?)) {
-        Get-Error
-        Write-Host "ERROR: When execute last command. Check and try again. ErrorCode = $($LASTEXITCODE)." -ForegroundColor Red
-        exit
+        if($NoThrowError.IsPresent)
+        {
+            return $false
+        }
+        throw "ERROR: When execute last command. Check and try again. ExitCode = $($LASTEXITCODE)."
     }  
+    return $true
 }
     
 function Select-ValueByPlatform {
