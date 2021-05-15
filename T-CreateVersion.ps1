@@ -6,31 +6,29 @@ param (
     $ValueType = "Build"
 )
 
-$item = Get-Item "./Z-CoreFxs.ps1"
-Import-Module -Name "$item" -Force -NoClobber
+$ErrorActionPreference = "Stop"
+Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 
-$version = Get-Content "./Version.txt"
+$configFile = "./Z-Config.json"
+$versionFile = "./Z-Version.json"
+$releaseFolder = "./release"
+Remove-Item "$releaseFolder" -Force -Recurse -ErrorAction Ignore
+New-Item "$releaseFolder" -ItemType Container -Force
+$versionObj = (Get-JsonObject "$versionFile")
+$version = Get-NextVersion $versionObj.Version $ValueType
 
-$version = Get-NextVersion $version $ValueType
 
-Remove-Item "./release/*.ps1" -Force -ErrorAction Ignore
-Remove-Item "./release/*.zip" -Force -ErrorAction Ignore
-@(
-    "./X-Edit-ProjectSecrets.ps1",
-    "./X-Publish-ProjectPackage.ps1",
-    "./X-Set-ProjectSecrets.ps1",
-    "./X-Push-ProjectToRemote.ps1",
-    "./Z-CoreFxs.ps1",
-    "./Z-CoreValues.ps1"
-) | ForEach-Object {
+(Get-JsonObject "$configFile").Scripts | ForEach-Object {
     
     $name = "$($_ | Split-Path -Leaf)".Replace("ps1", "$($version).ps1")
-    Write-Host $name
-    New-Item "./release/$name" -Value "$(Get-Content $_ -Raw)" -Force
+    Write-Host "Creating: $name"
+    Copy-Item "./$_" "$releaseFolder/$name"
+    #New-Item "./release/$name" -Value "$(Get-Content $_ -Raw)" -Force
 }
 
-$zipFile = "./release/PowerShellCoreFxs.$version.zip"
-Compress-Archive "./release/*.ps1" "$zipFile"
-Remove-Item "./release/*.ps1" -Force -ErrorAction Ignore
+$zipFile = "$releaseFolder/PowerShellCoreFxs.$version.zip"
+Compress-Archive "$releaseFolder/*.ps1" "$zipFile"
+Remove-Item "$releaseFolder/*.ps1" -Force -ErrorAction Ignore
 
-Set-Content "./Version.txt" -Value $version
+$versionObj.Version = $version
+Set-Content "$versionFile" -Value "$(ConvertTo-Json $versionObj)"

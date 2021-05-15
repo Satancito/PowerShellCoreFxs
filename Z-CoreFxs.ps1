@@ -1,10 +1,3 @@
-$XCoreValues = Get-Item "./Z-CoreValues*.ps1"
-if (-not (Test-Path $XCoreValues -PathType Leaf)) {
-    Write-InfoYellow "File `"$($PSScriptRoot)/Z-CoreValues*.ps1`" not found."
-}
-    
-Import-Module -Name "$XCoreValues" -Force -NoClobber
-
 function Write-TextColor {
     Param(
         [parameter(Position = 0, ValueFromPipeline = $true)]
@@ -763,7 +756,10 @@ function Get-NextVersion {
 
         [System.String]
         [ValidateSet("Major", "Minor", "Build", "Revision")]
-        $ValueType
+        $ValueType,
+
+        [switch]
+        $Full
     )
 
     
@@ -775,29 +771,33 @@ function Get-NextVersion {
     $avRevision = [System.String]::IsNullOrWhiteSpace($avRevision) ? "0" : $avRevision
     switch ($ValueType) {
         ("Major") {  
-            $avMajor = [Convert]::ToInt32($avMajor, 10) + 1;
-            $avMinor = 0
-            $avBuild = 0
-            $avRevision = 0
+            $avMajor = "$([Convert]::ToInt32($avMajor, 10) + 1)";
+            $avMinor = ($full.IsPresent ? ".0" : [String]::Empty)
+            $avBuild = ($full.IsPresent ? ".0" : [String]::Empty)
+            $avRevision = ($full.IsPresent ? ".0" : [String]::Empty)
         }
         ("Minor") {  
-            $avMinor = [Convert]::ToInt32($avMinor, 10) + 1;
-            $avBuild = 0
-            $avRevision = 0
+            $avMinor = ".$([Convert]::ToInt32($avMinor, 10) + 1)";
+            $avBuild = ($full.IsPresent ? ".0" : [String]::Empty)
+            $avRevision = ($full.IsPresent ? ".0" : [String]::Empty)
         }
         ("Build") {  
-            $avBuild = [Convert]::ToInt32($avBuild, 10) + 1;
-            $avRevision = 0
+            $avMinor = ".$avMinor"
+            $avBuild = ".$([Convert]::ToInt32($avBuild, 10) + 1)";
+            $avRevision = ($full.IsPresent ? ".0" : [String]::Empty)
         }
         ("Revision") {  
-            $avRevision = [Convert]::ToInt32($avRevision, 10) + 1;
+            $avMinor = ".$avMinor"
+            $avBuild = ".$avBuild"
+            $avRevision = ".$([Convert]::ToInt32($avRevision, 10) + 1)";
         }
+
         Default {
             Write-Error "Unknown ValueType `"$ValueType`"."
         }
     }
 
-    return "$avMajor.$avMinor.$avBuild.$avRevision"
+    return "$avMajor$avMinor$avBuild$avRevision"
 }
 
 function Read-Key {
@@ -848,14 +848,12 @@ function Test-LastExitCode {
         $NoThrowError
     )
     if (($LASTEXITCODE -ne 0) -or (-not $?)) {
-        if($NoThrowError.IsPresent)
-        {
+        if ($NoThrowError.IsPresent) {
             return $false
         }
         throw "ERROR: When execute last command. Check and try again. ExitCode = $($LASTEXITCODE)."
     }  
-    if($NoThrowError.IsPresent)
-    {
+    if ($NoThrowError.IsPresent) {
         return $true
     }
 
@@ -907,10 +905,8 @@ function Set-LocalEnvironmentVariable {
         [Switch]
         $Append
     )
-    if($Append.IsPresent)
-    {
-        if(Test-Path "env:$Name")
-        {
+    if ($Append.IsPresent) {
+        if (Test-Path "env:$Name") {
             $Value = (Get-Item "env:$Name").Value + $Value
         }
     }
@@ -960,4 +956,12 @@ function Set-PersistentEnvironmentVariable {
         return
     }
     throw "Invalid platform."
+}
+
+function Get-JsonObject {
+    param (
+        [String]
+        $Path
+    )
+    return (Get-Content -Path $Path | ConvertFrom-Json)
 }

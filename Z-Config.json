@@ -1,0 +1,10 @@
+{
+    "Scripts": [
+        "X-Edit-ProjectSecrets.ps1",
+        "X-Publish-ProjectPackage.ps1",
+        "X-Push-ProjectToRemote.ps1",
+        "X-Set-ProjectSecrets.ps1",
+        "X-Update-PowerShellCoreFxs.ps1",
+        "Z-CoreFxs.ps1"
+    ]
+}
