@@ -965,3 +965,57 @@ function Get-JsonObject {
     )
     return (Get-Content -Path $Path | ConvertFrom-Json)
 }
+
+function Get-ItemTree() {
+    param (
+        [Parameter()]
+        [System.String]
+        $Path = ".",
+
+        [Parameter()]
+        [System.String]
+        $Include = "*",
+
+        [Parameter()]
+        [switch]
+        $IncludePath,
+
+        [Parameter()]
+        [switch]
+        $Force
+
+    )
+    $result = @()
+    if (!(Test-Path $Path)) {
+        throw "Invalid path. The path `"$Path`" doesn't exist." #Test if path is valid.
+    }
+    if (Test-Path $Path -PathType Container)
+    {
+        $result += (Get-ChildItem "$Path" -Include "$Include" -Force:$Force -Recurse) # Add all items inside of a container, if path is a container.
+    }
+    if($IncludePath.IsPresent)
+    {
+        $result += @(Get-Item $Path -Force) # Add the $Path in the result.
+    }
+    $result = ,@($result | Sort-Object -Descending -Unique -Property "PSPath") # Sort elements by PSPath property, order in descending, remove duplicates with unique.
+    return  $result
+}
+
+function Remove-ItemTree {
+    param (
+        [Parameter()]
+        [System.String]
+        $Path, 
+
+        [Parameter()]
+        [switch]
+        $ForceDebug
+    )
+    (Get-TreeItem -Path $Path -Force -IncludePath) | ForEach-Object{
+        Remove-Item "$($_.PSPath)" -Force
+        if($PSBoundParameters.Debug.IsPresent)
+        {
+            Write-Debug -Message "Deleted: $($_.PSPath)" -Debug:$ForceDebug
+        }
+    }
+}
