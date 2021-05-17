@@ -22,8 +22,8 @@ Write-Host
 Write-InfoBlue "█ Commit"
 
 & "./T-CreateVersion.ps1"
-$versionFile = "./Z-Version.json"
-$version = (Get-JsonObject "$versionFile").Version
+$configFile = "./Z-Config.json"
+$version = (Get-JsonObject "$configFile").Version
 
 if (!$WithCustomMessage.IsPresent) {
     $message = $version

@@ -1,3 +1,40 @@
+function Set-GlobalConstant {
+    param (
+        [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $Name,
+
+        [Parameter(Mandatory = $True, Position = 1, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $Value
+    )
+    Process {
+        if (!(Get-Variable "$Name"  -ErrorAction 'Ignore')) {
+            Set-Variable -Name "$Name" -Option Constant -Value "$Value" -Scope Global
+        }
+    }
+}
+
+function Set-GlobalVariable {
+    param (
+        [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $Name,
+
+        [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true)]
+        [System.String]
+        $Value = ""
+    )
+    Process {
+        Set-Variable -Name "$Name" -Value "$Value" -Scope Global
+    }
+}
+
+Set-GlobalConstant -Name "X_TEMP_DIR" -Value ".X-TEMP"
+
 function Write-TextColor {
     Param(
         [parameter(Position = 0, ValueFromPipeline = $true)]
@@ -333,41 +370,6 @@ function Write-InfoBlack {
 
     Process {
         Write-TextColor $Information Black $NoNewLine
-    }
-}
-
-function Set-GlobalConstant {
-    param (
-        [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [System.String]
-        $Name,
-
-        [Parameter(Mandatory = $True, Position = 1, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [System.String]
-        $Value
-    )
-    Process {
-        if (!(Get-Variable "$Name"  -ErrorAction 'Ignore')) {
-            Set-Variable -Name "$Name" -Option Constant -Value "$Value" -Scope Global
-        }
-    }
-}
-
-function Set-GlobalVariable {
-    param (
-        [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [System.String]
-        $Name,
-
-        [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true)]
-        [System.String]
-        $Value = ""
-    )
-    Process {
-        Set-Variable -Name "$Name" -Value "$Value" -Scope Global
     }
 }
 
@@ -1011,7 +1013,7 @@ function Remove-ItemTree {
         [switch]
         $ForceDebug
     )
-    (Get-TreeItem -Path $Path -Force -IncludePath) | ForEach-Object{
+    (Get-ItemTree -Path $Path -Force -IncludePath) | ForEach-Object{
         Remove-Item "$($_.PSPath)" -Force
         if($PSBoundParameters.Debug.IsPresent)
         {
@@ -1019,3 +1021,50 @@ function Remove-ItemTree {
         }
     }
 }
+
+function Test-GitRepository {
+    param (
+        [Parameter()]
+        [System.String]
+        $Path
+    )
+    if (!(Test-Path $Path -PathType Container)) {
+        return $false
+    }
+    try {
+        Push-Location $Path
+        git rev-parse --is-inside-work-tree --quiet | Out-Null
+        $result = Test-LastExitCode -NoThrowError
+        return $result
+    }
+    finally {
+        Pop-Location
+    }
+}
+
+function Set-GitRepository {
+    param (
+        [Parameter()]
+        [System.String]
+        $RepositoryUrl,
+
+        [Parameter()]
+        [System.String]
+        $Path = [System.String]::Empty
+    )
+    $Path = ([System.String]::IsNullOrWhiteSpace($Path) ? "$(Get-UserHome)/$X_TEMP_DIR" : $Path)
+    $folderName = ($RepositoryUrl | Split-Path -Leaf).Replace(".git", [String]::Empty)  
+    New-Item "Path" -Force -ItemType Container | Out-Null
+    Remove-ItemTree "$path/$folderName" -ErrorAction Ignore
+    try {
+        Push-Location $Path
+        git clone $RepositoryUrl
+        Test-LastExitCode
+    }
+    finally {
+        Pop-Location
+    }
+    
+}
+
+
