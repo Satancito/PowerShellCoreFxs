@@ -12,7 +12,7 @@ Set-GitRepository $PowerShellCoreFxs $Path
 
 $json = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"
 
-(Get-JsonObject "./Z-Config.json").Scripts | ForEach-Object{
+(Get-JsonObject "./Z-Config.json").Files | ForEach-Object{
     if("$_".Equals("Z-Config.json"))
     {
         Write-Host "Manejando Json $json"
