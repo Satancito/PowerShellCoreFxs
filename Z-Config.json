@@ -8,6 +8,5 @@
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
-  "Version": "1.0.60",
-  "Greetings": "HelloWorld"
+  "Version": "1.0.61"
 }
