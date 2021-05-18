@@ -1055,7 +1055,7 @@ function Set-GitRepository {
     $Path = ([System.String]::IsNullOrWhiteSpace($Path) ? "$(Get-UserHome)/$X_TEMP_DIR" : $Path)
     $folderName = ($RepositoryUrl | Split-Path -Leaf).Replace(".git", [String]::Empty)  
     New-Item "$Path" -Force -ItemType Container | Out-Null
-    Remove-ItemTree "$path/$folderName" -ErrorAction Ignore
+    Remove-ItemTree "$Path/$folderName" -ErrorAction Ignore
     try {
         Push-Location $Path
         git clone $RepositoryUrl
