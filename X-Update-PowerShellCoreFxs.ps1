@@ -10,14 +10,14 @@ if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellC
 }
 
 Set-GitRepository $PowerShellCoreFxs $Path
+$jsonDestinationFilename = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"
+$jsonConfigurationFile = ($jsonDestinationFilename.Equals("Z-Config.json") ? "$Path/$(Get-VariableName $PowerShellCoreFxs)/$jsonDestinationFilename" : "./Z-Config.json")
 
-$json = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"
-
-(Get-JsonObject "./Z-Config.json").Files | ForEach-Object{
+(Get-JsonObject "$jsonConfigurationFile").Files | ForEach-Object{
     if("$_".Equals("Z-Config.json"))
     {
-        Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" "./$json" -Force 
-        Write-PrettyKeyValue "Updating" "$json"
+        Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" "./$jsonDestinationFilename" -Force 
+        Write-PrettyKeyValue "Updating" "$jsonDestinationFilename"
     }
     else
     {
