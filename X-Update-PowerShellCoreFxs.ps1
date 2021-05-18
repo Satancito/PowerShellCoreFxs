@@ -15,12 +15,12 @@ $json = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z
 (Get-JsonObject "./Z-Config.json").Files | ForEach-Object{
     if("$_".Equals("Z-Config.json"))
     {
-        Write-Host "Manejando Json $json"
         Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" "./$json" -Force 
+        Write-PrettyKeyValue "Updating" "$json"
     }
     else
     {
         Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" "./$_" -Force 
+        Write-PrettyKeyValue "Updating" "$_"
     }
-    Write-Host $_
 }
