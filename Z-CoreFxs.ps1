@@ -1,3 +1,14 @@
+
+function Get-InternalPreference {
+    param (
+        
+    )
+
+    return @{
+        ForceOverwriteConstans = $true
+    }
+    
+}
 function Set-GlobalConstant {
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
@@ -8,13 +19,10 @@ function Set-GlobalConstant {
         [Parameter(Mandatory = $True, Position = 1, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [System.String]
-        $Value, 
-
-        [Parameter()]
-        [switch]
-        $Force
+        $Value
     )
     Process {
+        $Force = (Get-InternalPreference).ForceOverwriteConstans
         if (!(Get-Variable "$Name"  -ErrorAction 'Ignore')) {
             Set-Variable -Name "$Name" -Option Constant -Value "$Value" -Scope Global -Force:$Force
         }
@@ -1069,5 +1077,5 @@ function Set-GitRepository {
     
 }
 
-Set-GlobalConstant -Name "X_TEMP_DIR_NAME" -Value ".X-TEMP" -Force
-Set-GlobalConstant -Name "X_TEMP_DIR" -Value "$(Get-UserHome)/.X-TEMP" -Force
+Set-GlobalConstant -Name "X_TEMP_DIR_NAME" -Value ".X-TEMP"
+Set-GlobalConstant -Name "X_TEMP_DIR" -Value "$(Get-UserHome)/.X-TEMP"
