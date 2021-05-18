@@ -2,12 +2,13 @@ $ErrorActionPreference = "Stop"
 Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 
 $PowerShellCoreFxs = "https://github.com/Satancito/PowerShellCoreFxs.git"
+$Path = "$X_TEMP_DIR"
 if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellCoreFxs)"))
 {
     exit
 }
 
-$Path = "$X_TEMP_DIR"
+exit
 Set-GitRepository $PowerShellCoreFxs $Path
 
 $json = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"

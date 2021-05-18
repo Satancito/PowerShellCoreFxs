@@ -8,11 +8,15 @@ function Set-GlobalConstant {
         [Parameter(Mandatory = $True, Position = 1, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [System.String]
-        $Value
+        $Value, 
+
+        [Parameter()]
+        [switch]
+        $Force
     )
     Process {
         if (!(Get-Variable "$Name"  -ErrorAction 'Ignore')) {
-            Set-Variable -Name "$Name" -Option Constant -Value "$Value" -Scope Global
+            Set-Variable -Name "$Name" -Option Constant -Value "$Value" -Scope Global -Force:$Force
         }
     }
 }
@@ -32,8 +36,6 @@ function Set-GlobalVariable {
         Set-Variable -Name "$Name" -Value "$Value" -Scope Global
     }
 }
-
-Set-GlobalConstant -Name "X_TEMP_DIR" -Value ".X-TEMP"
 
 function Write-TextColor {
     Param(
@@ -1067,4 +1069,5 @@ function Set-GitRepository {
     
 }
 
-
+Set-GlobalConstant -Name "X_TEMP_DIR_NAME" -Value ".X-TEMP" -Force
+Set-GlobalConstant -Name "X_TEMP_DIR" -Value "$(Get-UserHome)/.X-TEMP" -Force
