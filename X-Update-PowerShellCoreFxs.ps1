@@ -5,10 +5,10 @@ $PowerShellCoreFxs = "https://github.com/Satancito/PowerShellCoreFxs.git"
 $Path = "$X_TEMP_DIR"
 if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellCoreFxs)"))
 {
+    Write-Debug -Message "Cannot overwrite original directory of scripts." -Debug
     exit
 }
 
-exit
 Set-GitRepository $PowerShellCoreFxs $Path
 
 $json = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"
