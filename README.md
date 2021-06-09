@@ -8,7 +8,7 @@
 **1.** Run this line in Powershell.
 
 ```
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/X-Update-PowerShellCoreFxs.ps1" -OutFile "X-Update-PowerShellCoreFxs.ps1";
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/X-Update-PowerShellCoreFxs.ps1" -OutFile "X-Update-PowerShellCoreFxs.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/Z-Config.json" -OutFile "Z-Config.json"
 ```
 
 **2.** Edit "**Z-Config.json**", remove innecesary scripts from json and save. Or skip to step 3.
