@@ -1,11 +1,19 @@
 $ErrorActionPreference = "Stop"
+if(!(Test-Path "./Z-CoreFxs.ps1" -PathType Leaf))
+{
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/Z-CoreFxs.ps1" -OutFile "Z-CoreFxs.ps1"
+}
+
 Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
+
+Write-Host
+Write-InfoMagenta "███ Update - PowerShellCoreFxs Scripts " 
 
 $PowerShellCoreFxs = "https://github.com/Satancito/PowerShellCoreFxs.git"
 $Path = "$X_TEMP_DIR"
 if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellCoreFxs)"))
 {
-    Write-Debug -Message "Cannot overwrite original directory of scripts." -Debug
+    Write-Warning -Message "WARNING. Cannot overwrite original directory of scripts."
     exit
 }
 
@@ -25,3 +33,5 @@ $jsonConfigurationFile = ($jsonDestinationFilename.Equals("Z-Config.json") ? "$P
         Write-PrettyKeyValue "Updating" "$_"
     }
 }
+
+Write-InfoMagenta "███ End - Update - PowerShellCoreFxs Scripts " 
