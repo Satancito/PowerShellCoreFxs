@@ -19,7 +19,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCo
 ./X-Update-PowerShellCoreFxs.ps1
 ```
 
-**4.** Import the downloaded scripts from your ps scripts.  
+**4.** Import the downloaded script from your ps scripts.  
 ```
 Import-Module -Name "$($PSCommandPath | Split-Path)/Z-CoreFxs.ps1" -Force -NoClobber #Same directory
 
@@ -29,6 +29,19 @@ Import-Module -Name "$($PSCommandPath)/../../../PowerShellCoreFxs/Z-CoreFxs.ps1"
 
 Import-Module -Name "path/to/script/Z-CoreFxs.ps1" -Force -NoClobber
 ```
+
+Or run the downloaded scripts
+
+```
+./X-Update-PowerShellCoreFxs.ps1
+```
+```
+./X-Edit-ProjectSecrets.ps1.ps1
+```
+
+## Prefixes
+"**Z-**" prefix is a not runnable script(library)   
+"**X-**" prefix is a runnable script.
 
 # Update
 
