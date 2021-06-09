@@ -11,7 +11,7 @@
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/X-Update-PowerShellCoreFxs.ps1" -OutFile "X-Update-PowerShellCoreFxs.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/Z-Config.json" -OutFile "Z-Config.json"
 ```
 
-**2.** Edit "**Z-Config.json**", remove innecesary scripts from json and save. Or skip to step 3.
+**2.** Edit "**Z-Config.json**", in the "Files" key's value remove from array the innecesary scripts and save. Or skip to step 3 if you need all.
 
 **3.** Run "**X-Update-PowerShellCoreFxs.ps1**"
 
@@ -86,3 +86,8 @@ Import-Module -Name "path/to/script/Z-CoreFxs.ps1" -Force -NoClobber
 ```
 ./X-Update-PowerShellCoreFxs.ps1
 ```
+
+# Update "Z-Config.json"
+if "**Z-Config.json**" exists the script "**X-Update-PowerShellCoreFxs.ps1**" don't replace the file, it creates the file "**Z-Config.Last.json**" it contains the latest configuration values.
+
+If you need any latest script you need to copy manually the script name from "**Z-Config.Last.json**" to "**Z-Config.json**"
