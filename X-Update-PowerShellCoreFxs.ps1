@@ -1,7 +1,9 @@
 $ErrorActionPreference = "Stop"
+
+$ZCoreFxsUri = "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/Z-CoreFxs.ps1"
 if(!(Test-Path "./Z-CoreFxs.ps1" -PathType Leaf))
 {
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCoreFxs/main/Z-CoreFxs.ps1" -OutFile "Z-CoreFxs.ps1"
+    Invoke-WebRequest -Uri "$ZCoreFxsUri" -OutFile "Z-CoreFxs.ps1"
 }
 
 Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
@@ -21,7 +23,8 @@ Set-GitRepository $PowerShellCoreFxs $Path
 $jsonDestinationFilename = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"
 $jsonConfigurationFile = ($jsonDestinationFilename.Equals("Z-Config.json") ? "$Path/$(Get-VariableName $PowerShellCoreFxs)/$jsonDestinationFilename" : "./Z-Config.json")
 
-(Get-JsonObject "$jsonConfigurationFile").Files | ForEach-Object{
+$jsonObject = Get-JsonObject "$jsonConfigurationFile"
+($jsonObject.Files + $jsonObject.CoreFiles) | ForEach-Object{
     if("$_".Equals("Z-Config.json"))
     {
         Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" "./$jsonDestinationFilename" -Force 

@@ -3,10 +3,12 @@
     "X-Edit-ProjectSecrets.ps1",
     "X-Publish-ProjectPackage.ps1",
     "X-Push-ProjectToRemote.ps1",
-    "X-Set-ProjectSecrets.ps1",
+    "X-Set-ProjectSecrets.ps1"
+  ],
+  "CoreFiles": [
     "X-Update-PowerShellCoreFxs.ps1",
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
-  "Version": "1.0.62"
+  "Version": "1.0.63"
 }
