@@ -9,6 +9,7 @@ function Get-InternalPreference {
     }
     
 }
+
 function Set-GlobalConstant {
     param (
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
@@ -416,6 +417,12 @@ function Test-OnlyMacOS {
     }
 }
 
+class DbProviderSet : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return @($Global:SQLSERVER_PROVIDER, $Global:POSTGRESQL_PROVIDER, $Global:MYSQL_PROVIDER, $Global:ORACLE_PROVIDER, $Global:ALL_PROVIDER)
+    }
+}
+
 function Stop-WhenIsDbProviderName {
     param (
         [Parameter(Mandatory = $true, Position = 0)]
@@ -450,7 +457,7 @@ function Add-Migration {
 
         [Parameter(Mandatory = $true)]
         [System.String]
-        [ValidateSet("SqlServer", "PostgreSql", "MySql", "All")]
+        [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         $Provider,
 
         [Parameter(Mandatory = $true)]
@@ -466,25 +473,16 @@ function Add-Migration {
         $Context = ""
     )
     switch ($Provider) {
-        ("SqlServer") {  
-            $Context = "$($Context)SqlServerDbContext"
-            $outputDir = "Migrations/SqlServer"
+        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+            $Context = "$($Context)$($Provider)DbContext"
+            $outputDir = "Migrations/$Provider"
         }
 
-        ("PostgreSql") {  
-            $Context = "$($Context)PostgreSqlDbContext"
-            $outputDir = "Migrations/PostgreSql"
-        }
-
-        ("MySql") {  
-            $Context = "$($Context)MySqlDbContext"
-            $outputDir = "Migrations/MySql"
-        }
-
-        ("All") {
-            Add-Migration -Name $Name -Provider "SqlServer" -Project $project -StartupProject $startupProject -Context $Context
-            Add-Migration -Name $Name -Provider "PostgreSql" -Project $project -StartupProject $startupProject -Context $Context
-            Add-Migration -Name $Name -Provider "MySql" -Project $project -StartupProject $startupProject -Context $Context
+        ($ALL_PROVIDER) {
+            Add-Migration -Name $Name -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-Migration -Name $Name -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-Migration -Name $Name -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-Migration -Name $Name -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return
         } 
 
@@ -501,7 +499,7 @@ function Add-Migration {
 function Remove-Migration {
     param ( 
         [Parameter(Mandatory = $false, Position = 0)]
-        [ValidateSet("SqlServer", "PostgreSql", "MySql", "All")]
+        [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         [System.String]
         $Provider = "All",
 
@@ -515,26 +513,22 @@ function Remove-Migration {
 
         [Parameter(Mandatory = $false)]
         [System.String]
-        $Context = ""
+        $Context = "",
+
+        [switch]
+        $Force
     )
 
     switch ($Provider) {
-        ("SqlServer") {  
-            $Context = "$($Context)SqlServerDbContext"
+        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+            $Context = "$($Context)$($Provider)DbContext"
         }
 
-        ("PostgreSql") {  
-            $Context = "$($Context)PostgreSqlDbContext"
-        }
-
-        ("MySql") {  
-            $Context = "$($Context)MySqlDbContext"
-        }
-
-        ("All") {
-            Remove-Migration -Provider "SqlServer" -Project $Project -StartupProject $StartupProject -Context $context
-            Remove-Migration -Provider "PostgreSql" -Project $Project -StartupProject $StartupProject -Context $Context
-            Remove-Migration -Provider "MySql" -Project $Project -StartupProject $StartupProject -Context $Context
+        ($ALL_PROVIDER) {
+            Remove-Migration -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $context
+            Remove-Migration -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Remove-Migration -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Remove-Migration -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             return
         } 
 
@@ -557,7 +551,7 @@ function Remove-Migration {
 function Remove-Database {
     param (
         [System.String]
-        [ValidateSet("SqlServer", "PostgreSql", "MySql", "All")]
+        [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         $Provider = "All",
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -571,22 +565,15 @@ function Remove-Database {
         $Context = ""
     )
     switch ($Provider) {
-        ("SqlServer") {  
-            $Context = "$($Context)SqlServerDbContext"
+        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+            $Context = "$($Context)$($Provider)DbContext"
         }
 
-        ("PostgreSql") {  
-            $Context = "$($Context)PostgreSqlDbContext"
-        }
-
-        ("MySql") {  
-            $Context = "$($Context)MySqlDbContext"
-        }
-
-        ("All") {
-            Remove-Database -Provider "SqlServer" -Project $project -StartupProject $startupProject -Context $Context
-            Remove-Database -Provider "PostgreSql" -Project $project -StartupProject $startupProject -Context $Context
-            Remove-Database -Provider "MySql" -Project $project -StartupProject $startupProject -Context $Context
+        ($ALL_PROVIDER) {
+            Remove-Database -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-Database -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-Database -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-Database -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return;
         } 
 
@@ -603,7 +590,7 @@ function Remove-Database {
 function Update-Database {
     param (
         [System.String]
-        [ValidateSet("SqlServer", "PostgreSql", "MySql", "All")]
+        [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         $Provider = "All",
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -616,24 +603,17 @@ function Update-Database {
         $Context = ""
     )
     switch ($Provider) {
-        ("SqlServer") {  
-            $Context = "$($Context)SqlServerDbContext"
+        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+            $Context = "$($Context)$($Provider)DbContext"
         }
 
-        ("PostgreSql") {  
-            $Context = "$($Context)PostgreSqlDbContext"
-        }
-
-        ("MySql") {  
-            $Context = "$($Context)MySqlDbContext" 
-        }
-
-        ("All") {
-            Update-Database -Provider "SqlServer" -Project $Project -StartupProject $StartupProject -Context $Context
-            Update-Database -Provider "PostgreSql" -Project $Project -StartupProject $StartupProject -Context $Context
-            Update-Database -Provider "MySql" -Project $Project -StartupProject $StartupProject -Context $Context
+        ($ALL_PROVIDER) {
+            Update-Database -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-Database -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-Database -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-Database -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             return
-        } 
+        }
 
         Default {
             Write-Error "Invalid Provider"
@@ -647,7 +627,7 @@ function Update-Database {
 function New-MigrationScript {
     param (
         [System.String]
-        [ValidateSet("SqlServer", "PostgreSql", "MySql", "All")]
+        [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         $Provider = "All",
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -660,25 +640,16 @@ function New-MigrationScript {
         $Context = ""
     )
     switch ($Provider) {
-        ("SqlServer") {  
-            $Context = "$($Context)SqlServerDbContext"
-            $outputFile = "$Project/SqlScripts/SqlServer/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
+        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) {  
+            $Context = "$($Context)$($Provider)DbContext"
+            $outputFile = "$Project/SqlScripts/$Provider/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
         }
 
-        ("PostgreSql") {  
-            $Context = "$($Context)PostgreSqlDbContext"
-            $outputFile = "$Project/SqlScripts/PostgreSql/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
-        }
-
-        ("MySql") {  
-            $Context = "$($Context)MySqlDbContext"
-            $outputFile = "$Project/SqlScripts/MySql/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
-        }
-
-        ("All") {
-            New-MigrationScript -Provider "SqlServer" -Project $project -StartupProject $startupProject -Context $Context
-            New-MigrationScript -Provider "PostgreSql" -Project $project -StartupProject $startupProject -Context $Context
-            New-MigrationScript -Provider "MySql" -Project $project -StartupProject $startupProject -Context $Context
+        ($ALL_PROVIDER) {
+            New-MigrationScript -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-MigrationScript -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-MigrationScript -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-MigrationScript -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return
         }
 
@@ -1001,15 +972,13 @@ function Get-ItemTree() {
     if (!(Test-Path $Path)) {
         throw "Invalid path. The path `"$Path`" doesn't exist." #Test if path is valid.
     }
-    if (Test-Path $Path -PathType Container)
-    {
+    if (Test-Path $Path -PathType Container) {
         $result += (Get-ChildItem "$Path" -Include "$Include" -Force:$Force -Recurse) # Add all items inside of a container, if path is a container.
     }
-    if($IncludePath.IsPresent)
-    {
+    if ($IncludePath.IsPresent) {
         $result += @(Get-Item $Path -Force) # Add the $Path in the result.
     }
-    $result = ,@($result | Sort-Object -Descending -Unique -Property "PSPath") # Sort elements by PSPath property, order in descending, remove duplicates with unique.
+    $result = , @($result | Sort-Object -Descending -Unique -Property "PSPath") # Sort elements by PSPath property, order in descending, remove duplicates with unique.
     return  $result
 }
 
@@ -1023,10 +992,9 @@ function Remove-ItemTree {
         [switch]
         $ForceDebug
     )
-    (Get-ItemTree -Path $Path -Force -IncludePath) | ForEach-Object{
+    (Get-ItemTree -Path $Path -Force -IncludePath) | ForEach-Object {
         Remove-Item "$($_.PSPath)" -Force
-        if($PSBoundParameters.Debug.IsPresent)
-        {
+        if ($PSBoundParameters.Debug.IsPresent) {
             Write-Debug -Message "Deleted: $($_.PSPath)" -Debug:$ForceDebug
         }
     }
@@ -1078,4 +1046,11 @@ function Set-GitRepository {
 }
 
 Set-GlobalConstant -Name "X_TEMP_DIR_NAME" -Value ".X-TEMP"
-Set-GlobalConstant -Name "X_TEMP_DIR" -Value "$(Get-UserHome)/.X-TEMP"
+Set-GlobalConstant -Name "X_TEMP_DIR" -Value "$(Get-UserHome)/$X_TEMP_DIR_NAME"
+
+Set-GlobalConstant -Name "SQLSERVER_PROVIDER" -Value "SqlServer"
+Set-GlobalConstant -Name "POSTGRESQL_PROVIDER" -Value "PostgreSql"
+Set-GlobalConstant -Name "MYSQL_PROVIDER" -Value "MySql"
+Set-GlobalConstant -Name "ORACLE_PROVIDER" -Value "Oracle"
+Set-GlobalConstant -Name "ALL_PROVIDER" -Value "All"
+
