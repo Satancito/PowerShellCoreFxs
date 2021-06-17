@@ -1,12 +1,12 @@
 {
   "Files": [
-    "X-PowerShellCoreFxs-EditProjectSecrets1.ps1",
-    "X-PowerShellCoreFxs-PublishProjectPackage1.ps1",
-    "X-PowerShellCoreFxs-PushProjectToRemote1.ps1",
-    "X-PowerShellCoreFxs-SetProjectSecrets1.ps1"
+    "X-PowerShellCoreFxs-EditProjectSecrets.ps1",
+    "X-PowerShellCoreFxs-PublishProjectPackage.ps1",
+    "X-PowerShellCoreFxs-PushProjectToRemote.ps1",
+    "X-PowerShellCoreFxs-SetProjectSecrets.ps1"
   ],
   "CoreFiles": [
-    "X-PowershellCoreFxs-Update1.ps1",
+    "X-PowershellCoreFxs-Update.ps1",
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
