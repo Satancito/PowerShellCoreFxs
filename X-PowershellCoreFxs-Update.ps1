@@ -19,7 +19,7 @@ if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellC
     exit
 }
 
-Set-GitRepository $PowerShellCoreFxs $Path
+Set-GitRepository $PowerShellCoreFxs $Path 
 $jsonDestinationFilename = (Test-Path "./Z-Config.json" -PathType Leaf) ? "Z-Config.Last.json" : "Z-Config.json"
 $jsonConfigurationFile = ($jsonDestinationFilename.Equals("Z-Config.json") ? "$Path/$(Get-VariableName $PowerShellCoreFxs)/$jsonDestinationFilename" : "./Z-Config.json")
 

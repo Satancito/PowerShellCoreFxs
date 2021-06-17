@@ -17,7 +17,7 @@ if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
 
 
 Write-Host
-Write-InfoBlue "█ Adding secrets"
+Write-InfoBlue "█ Adding secrets" 
 dotnet add "$ProjectName" package "Microsoft.Extensions.Configuration.UserSecrets"
 dotnet user-secrets init
 dotnet user-secrets clear

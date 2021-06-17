@@ -8,4 +8,4 @@ Write-Host "SecretFilename: $SecretsFileName" -ForegroundColor Blue
 if (!(Test-Path -Path $secretsFileName -PathType Leaf)) {
     New-Item -Path $secretsFileName -Value "{}" | Out-Null
 }
-code $SecretsFileName
+code $SecretsFileName 

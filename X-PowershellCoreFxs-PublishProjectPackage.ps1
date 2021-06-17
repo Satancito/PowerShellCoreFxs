@@ -13,7 +13,7 @@ Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 
 
     
-Clear-Host
+Clear-Host 
     
 Write-Host
 [System.String] $project = Get-Item "./*.csproj"
