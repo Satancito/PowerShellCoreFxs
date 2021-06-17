@@ -33,10 +33,10 @@ Import-Module -Name "path/to/script/Z-CoreFxs.ps1" -Force -NoClobber
 Or run the downloaded scripts
 
 ```
-./X-Update-PowerShellCoreFxs.ps1
+./X-PowerShellCoreFxs-Update.ps1
 ```
 ```
-./X-Edit-ProjectSecrets.ps1.ps1
+./X-PowerShellCoreFxs-EditProjectSecrets.ps1
 ```
 
 ## Prefixes
@@ -45,32 +45,31 @@ Or run the downloaded scripts
 
 # Update
 
-**1.** Run "**X-Update-PowerShellCoreFxs.ps1**" 
+**1.** Run "**X-PowerShellCoreFxs-Update.ps1**" 
 
 ```
-./X-Update-PowerShellCoreFxs.ps1
+./X-PowerShellCoreFxs-Update.ps1
 ```
 
 # Get all scripts files 
-**1.** Remove "**Z-Config.json**"
 
-**2.** Run "**X-Update-PowerShellCoreFxs.ps1**" 
+**1.** Run "**X-PowerShellCoreFxs-Update.ps1**" 
 
 ```
-./X-Update-PowerShellCoreFxs.ps1
+./X-PowerShellCoreFxs-Update.ps1
 ```
 
-# Get specific script file
+# Get specific script files
 **1.** Edit "**Z-Config.json**" in the "Files" key's value add inside of array desired/removed script and finally save. "CoreFiles" key's value don't be modified.
 
 *Original file*
 ```
 {
   "Files": [
-    "X-Edit-ProjectSecrets.ps1"
+    "X-PowerShellCoreFxs-EditProjectSecrets.ps1"
   ],
   "CoreFiles": [
-    "X-Update-PowerShellCoreFxs.ps1",
+    "X-PowerShellCoreFxs-Update.ps1",
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
@@ -82,12 +81,12 @@ Or run the downloaded scripts
 ```
 {
   "Files": [
-    "X-Edit-ProjectSecrets.ps1",
-    "X-Set-ProjectSecrets.ps1",
-    "X-Push-ProjectToRemote.ps1"
+    "X-PowerShellCoreFxs-EditProjectSecrets.ps1",
+    "X-PowerShellCoreFxs-SetProjectSecrets.ps1",
+    "X-PowerShellCoreFxs-PushProjectToRemote.ps1"
   ],
   "CoreFiles": [
-    "X-Update-PowerShellCoreFxs.ps1",
+    "X-PowerShellCoreFxs-Update.ps1",
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
@@ -95,12 +94,12 @@ Or run the downloaded scripts
 }
 ```
 
-**2.** Run "**X-Update-PowerShellCoreFxs.ps1**" 
+**2.** Run "**X-PowerShellCoreFxs-Update.ps1**" 
 ```
-./X-Update-PowerShellCoreFxs.ps1
+./X-PowerShellCoreFxs-Update.ps1
 ```
 
 # Update "Z-Config.json"
-if "**Z-Config.json**" exists the script "**X-Update-PowerShellCoreFxs.ps1**" don't replace the file, it creates the file "**Z-Config.Last.json**" it contains the latest configuration values.
+if "**Z-Config.json**" exists the script "**X-PowerShellCoreFxs-Update.ps1**" don't replace the file, it creates the file "**Z-Config.Last.json**" it contains the latest configuration values.
 
 If you need any latest script you need to copy manually the script name from "**Z-Config.Last.json**" to "**Z-Config.json**"
