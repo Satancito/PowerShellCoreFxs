@@ -13,10 +13,10 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Satancito/PowerShellCo
 
 **2.** Edit "**Z-Config.json**", in the "Files" key's value remove from array the innecesary scripts and save. Or skip to step 3 if you need all.
 
-**3.** Run "**X-Update-PowerShellCoreFxs.ps1**"
+**3.** Run "**X-PowerShellCoreFxs-Update.ps1**"
 
 ```
-./X-Update-PowerShellCoreFxs.ps1
+./X-PowerShellCoreFxs-Update.ps1
 ```
 
 **4.** Import the downloaded script from your ps scripts.  
