@@ -16,8 +16,8 @@ New-Item "$releaseFolder" -ItemType Container -Force | Out-Null
 $configObj = (Get-JsonObject "$configFile")
 $version = Get-NextVersion $configObj.Version $ValueType
 
-
-(Get-JsonObject "$configFile").Files | ForEach-Object {
+$jsonObject = Get-JsonObject "$configFile"
+($jsonObject.Files + $jsonObject.CoreFiles) | ForEach-Object {
     Copy-Item "./$_" "$releaseFolder/$_"
 }
 
