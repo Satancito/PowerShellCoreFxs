@@ -479,6 +479,7 @@ function Add-EfCore-Migration {
         [System.String]
         $Context = ""
     )
+    Install-EfCore-Tools
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -525,7 +526,7 @@ function Remove-EfCore-Migration {
         [switch]
         $Force
     )
-
+    Install-EfCore-Tools
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -571,6 +572,7 @@ function Remove-EfCore-Database {
         [System.String]
         $Context = ""
     )
+    Install-EfCore-Tools
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -609,6 +611,7 @@ function Update-EfCore-Database {
         [System.String]
         $Context = ""
     )
+    Install-EfCore-Tools
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -646,6 +649,7 @@ function New-EfCore-MigrationScript {
         [System.String]
         $Context = ""
     )
+    Install-EfCore-Tools
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
