@@ -430,7 +430,7 @@ function Stop-WhenIsDbProviderName {
         $Value
     )
     switch ($Value) {
-        { $_ -in "SqlServer", "PostgreSql", "MySql", "All" } {
+        { $_ -in [DbProviderSet]::new().GetValidValues() } {
             Write-Error "Value cannot be a db Provider"
             exit
         }
@@ -449,7 +449,7 @@ function Install-EfCoreTools {
     dotnet tool update --global dotnet-ef
     dotnet-ef   
 }
-function Add-Migration {
+function Add-EfCore-Migration {
     param (
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -479,10 +479,10 @@ function Add-Migration {
         }
 
         ($ALL_PROVIDER) {
-            Add-Migration -Name $Name -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Add-Migration -Name $Name -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Add-Migration -Name $Name -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Add-Migration -Name $Name -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-EfCore-Migration -Name $Name -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-EfCore-Migration -Name $Name -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-EfCore-Migration -Name $Name -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-EfCore-Migration -Name $Name -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return
         } 
 
@@ -496,7 +496,7 @@ function Add-Migration {
     dotnet-ef migrations add "Migration_$($context)_$Name" --startup-project "$StartupProject" --project "$Project" --context "$context" --output-dir "$outputDir" --verbose
 }
 
-function Remove-Migration {
+function Remove-EfCore-Migration {
     param ( 
         [Parameter(Mandatory = $false, Position = 0)]
         [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
@@ -525,10 +525,10 @@ function Remove-Migration {
         }
 
         ($ALL_PROVIDER) {
-            Remove-Migration -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $context
-            Remove-Migration -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
-            Remove-Migration -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
-            Remove-Migration -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Remove-EfCore-Migration -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $context
+            Remove-EfCore-Migration -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Remove-EfCore-Migration -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Remove-EfCore-Migration -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             return
         } 
 
@@ -548,7 +548,7 @@ function Remove-Migration {
     
 }
 
-function Remove-Database {
+function Remove-EfCore-Database {
     param (
         [System.String]
         [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
@@ -570,10 +570,10 @@ function Remove-Database {
         }
 
         ($ALL_PROVIDER) {
-            Remove-Database -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Remove-Database -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Remove-Database -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Remove-Database -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-EfCore-Database -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-EfCore-Database -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-EfCore-Database -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-EfCore-Database -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return;
         } 
 
@@ -587,7 +587,7 @@ function Remove-Database {
     dotnet-ef database drop --startup-project "$startupProject" --context "$context" --project "$project" --force --verbose
 }
 
-function Update-Database {
+function Update-EfCore-Database {
     param (
         [System.String]
         [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
@@ -608,10 +608,10 @@ function Update-Database {
         }
 
         ($ALL_PROVIDER) {
-            Update-Database -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
-            Update-Database -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
-            Update-Database -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
-            Update-Database -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-EfCore-Database -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-EfCore-Database -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-EfCore-Database -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-EfCore-Database -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             return
         }
 
@@ -624,7 +624,7 @@ function Update-Database {
     dotnet-ef database update --startup-project "$StartupProject" --context "$context" --project "$Project" --verbose
 }
 
-function New-MigrationScript {
+function New-EfCore-MigrationScript {
     param (
         [System.String]
         [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
@@ -646,10 +646,10 @@ function New-MigrationScript {
         }
 
         ($ALL_PROVIDER) {
-            New-MigrationScript -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-MigrationScript -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-MigrationScript -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-MigrationScript -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-EfCore-MigrationScript -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-EfCore-MigrationScript -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-EfCore-MigrationScript -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-EfCore-MigrationScript -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return
         }
 
@@ -1053,4 +1053,3 @@ Set-GlobalConstant -Name "POSTGRESQL_PROVIDER" -Value "PostgreSql"
 Set-GlobalConstant -Name "MYSQL_PROVIDER" -Value "MySql"
 Set-GlobalConstant -Name "ORACLE_PROVIDER" -Value "Oracle"
 Set-GlobalConstant -Name "ALL_PROVIDER" -Value "All"
-
