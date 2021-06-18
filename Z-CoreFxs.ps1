@@ -440,14 +440,21 @@ function Stop-WhenIsDbProviderName {
     }
 }
 
-function Install-EfCoreTools {
+function Install-EfCore-Tools {
     param (
         
     )
-    Write-Host "█ Installing Entity Framework Core Tools" -ForegroundColor Magenta
-    dotnet tool install --global dotnet-ef
-    dotnet tool update --global dotnet-ef
-    dotnet-ef   
+    Write-Host "█ Try Install Entity Framework Core Tools" -ForegroundColor Magenta
+    if (Get-Command dotnet-ef -ErrorAction Ignore) {
+        "Updating..."
+        dotnet tool update --global dotnet-ef
+        dotnet-ef --version
+    }
+    else {
+        "Installing..."
+        dotnet tool install --global dotnet-ef
+        dotnet-ef --version
+    }
 }
 function Add-EfCore-Migration {
     param (
