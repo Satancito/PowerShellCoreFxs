@@ -5,7 +5,7 @@ $ProjectName = "$(Get-Item -Path "./*.csproj" | Split-Path -Leaf)" #.Replace(".c
 $SecretsFileName = "$(Get-UserHome)/$ProjectName.Secrets.json"
 
 Write-PrettyKeyValue "███ Updating secrets for project" "`"$($ProjectName)`""
-
+Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName"
 
 if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
     Write-Host
