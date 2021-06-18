@@ -265,7 +265,7 @@ function Write-InfoMagenta {
     }
 }
 
-function Write-DarkMagenta {
+function Write-InfoDarkMagenta {
     Param(
         [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
@@ -480,7 +480,7 @@ function Add-EfCore-Migration {
         $Context = ""
     )
     switch ($Provider) {
-        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
             $outputDir = "Migrations/$Provider"
         }
@@ -527,7 +527,7 @@ function Remove-EfCore-Migration {
     )
 
     switch ($Provider) {
-        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
         }
 
@@ -572,7 +572,7 @@ function Remove-EfCore-Database {
         $Context = ""
     )
     switch ($Provider) {
-        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
         }
 
@@ -610,7 +610,7 @@ function Update-EfCore-Database {
         $Context = ""
     )
     switch ($Provider) {
-        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
         }
 
@@ -647,7 +647,7 @@ function New-EfCore-MigrationScript {
         $Context = ""
     )
     switch ($Provider) {
-        ($SQLSERVER_PROVIDER -or $POSGRESQL_PROVIDER -or $MYSQL_PROVIDER -or $ORACLE_PROVIDER) {  
+        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
             $outputFile = "$Project/SqlScripts/$Provider/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
         }
