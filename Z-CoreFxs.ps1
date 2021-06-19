@@ -490,7 +490,7 @@ function Add-EfCore-Migration {
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
-            $outputDir = "Migrations/$Provider"
+            $outputDir = "Migrations/$Provider/$Context"
         }
 
         ($ALL_PROVIDER) {
@@ -507,7 +507,7 @@ function Add-EfCore-Migration {
         }
 
     }
-    Write-Host "█ Add Migration - $context" -ForegroundColor Magenta
+    Write-Host "█ Add Migration - $context - $outputDir" -ForegroundColor Magenta
     dotnet-ef migrations add "Migration_$($context)_$Name" --startup-project "$StartupProject" --project "$Project" --context "$context" --output-dir "$outputDir" --verbose
 }
 
@@ -665,17 +665,25 @@ function Update-EfCore-Database {
 function New-EfCore-MigrationScript {
     param (
         [System.String]
+        $Name = [String]::Empty,
+        
+        [System.String]
         [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         $Provider = "All",
+        
         [Parameter(Mandatory = $true)]
         [System.String]
         $Project,
+        
         [Parameter(Mandatory = $true)]
         [System.String]
         $StartupProject,
-        [Parameter(Mandatory = $false)]
+
         [System.String]
-        $Context = ""
+        $Context = [string]::Empty,
+
+        [switch]
+        $Idempotent
     )
     Install-EfCore-Tools
     Stop-WhenIsDbProviderName -Value $Name
@@ -688,14 +696,14 @@ function New-EfCore-MigrationScript {
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
-            $outputFile = "$Project/SqlScripts/$Provider/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
+            $outputFile = "$Project/MigrationScripts/$Provider/$Context/Migration_$($context)_$([string]::IsNullOrWhiteSpace($Name) ? "$([DateTime]::Now.ToString("yyyyMMddHHmmssfff"))" : $Name).sql"
         }
 
         ($ALL_PROVIDER) {
-            New-EfCore-MigrationScript -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-EfCore-MigrationScript -Provider $POSTGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-EfCore-MigrationScript -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-EfCore-MigrationScript -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-EfCore-MigrationScript -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context -Idempotent:$Idempotent
+            New-EfCore-MigrationScript -Provider $POSTGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context -Idempotent:$Idempotent
+            New-EfCore-MigrationScript -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context -Idempotent:$Idempotent
+            New-EfCore-MigrationScript -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context -Idempotent:$Idempotent
             return
         }
 
@@ -705,8 +713,8 @@ function New-EfCore-MigrationScript {
         }
 
     }
-    Write-Host "█ Creating Sql Script - $context" -ForegroundColor Magenta
-    dotnet ef migrations script --output "$outputFile" --context "$context" --project "$project" --startup-project "$startupProject" --verbose --idempotent
+    Write-Host "█ Creating Sql Script - $context - $outputFile" -ForegroundColor Magenta
+    dotnet ef migrations script --output "$outputFile" --context "$context" --project "$project" --startup-project "$startupProject" --verbose ($Idempotent.IsPresent? "--idempotent" : [string]::Empty)
 }
 
 function Update-Version {
