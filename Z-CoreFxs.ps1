@@ -490,7 +490,7 @@ function Add-EfCore-Migration {
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
-            $outputDir = "Migrations/$Provider/$Context"
+            $outputDir = "Migrations/$Provider/$($Context)_"
         }
 
         ($ALL_PROVIDER) {
