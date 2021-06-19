@@ -484,8 +484,8 @@ function Add-EfCore-Migration {
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
-    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
-    dotnet add "$startupProjectFile" reference "$projectFile"
+    dotnet add "$StartupProject/$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
@@ -538,8 +538,8 @@ function Remove-EfCore-Migration {
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
-    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
-    dotnet add "$startupProjectFile" reference "$projectFile"
+    dotnet add "$StartupProject/$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
@@ -591,8 +591,8 @@ function Remove-EfCore-Database {
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
-    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
-    dotnet add "$startupProjectFile" reference "$projectFile"
+    dotnet add "$StartupProject/$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
@@ -637,8 +637,8 @@ function Update-EfCore-Database {
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
-    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
-    dotnet add "$startupProjectFile" reference "$projectFile"
+    dotnet add "$StartupProject/$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
@@ -682,9 +682,9 @@ function New-EfCore-MigrationScript {
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
-    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
-    dotnet add "$startupProjectFile" reference "$projectFile"
-    
+    dotnet add "$StartupProject/$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
+
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
