@@ -488,14 +488,14 @@ function Add-EfCore-Migration {
     dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
-        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
             $outputDir = "Migrations/$Provider"
         }
 
         ($ALL_PROVIDER) {
             Add-EfCore-Migration -Name $Name -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Add-EfCore-Migration -Name $Name -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Add-EfCore-Migration -Name $Name -Provider $POSTGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             Add-EfCore-Migration -Name $Name -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             Add-EfCore-Migration -Name $Name -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return
@@ -542,13 +542,13 @@ function Remove-EfCore-Migration {
     dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
-        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
         }
 
         ($ALL_PROVIDER) {
             Remove-EfCore-Migration -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $context
-            Remove-EfCore-Migration -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Remove-EfCore-Migration -Provider $POSTGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             Remove-EfCore-Migration -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             Remove-EfCore-Migration -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             return
@@ -595,13 +595,13 @@ function Remove-EfCore-Database {
     dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
-        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
         }
 
         ($ALL_PROVIDER) {
             Remove-EfCore-Database -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            Remove-EfCore-Database -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            Remove-EfCore-Database -Provider $POSTGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             Remove-EfCore-Database -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             Remove-EfCore-Database -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return;
@@ -641,13 +641,13 @@ function Update-EfCore-Database {
     dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
-        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
         }
 
         ($ALL_PROVIDER) {
             Update-EfCore-Database -Provider $SQLSERVER_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
-            Update-EfCore-Database -Provider $POSGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
+            Update-EfCore-Database -Provider $POSTGRESQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             Update-EfCore-Database -Provider $MYSQL_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             Update-EfCore-Database -Provider $ORACLE_PROVIDER -Project $Project -StartupProject $StartupProject -Context $Context
             return
@@ -686,14 +686,14 @@ function New-EfCore-MigrationScript {
     dotnet add "$StartupProject/$startupProjectFile" reference "$Project/$projectFile"
 
     switch ($Provider) {
-        {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
+        {$_ -in @($SQLSERVER_PROVIDER, $POSTGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
             $outputFile = "$Project/SqlScripts/$Provider/$($context)_$([DateTime]::Now.ToString("yyyyMMddHHmmssfff")).sql"
         }
 
         ($ALL_PROVIDER) {
             New-EfCore-MigrationScript -Provider $SQLSERVER_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
-            New-EfCore-MigrationScript -Provider $POSGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
+            New-EfCore-MigrationScript -Provider $POSTGRESQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             New-EfCore-MigrationScript -Provider $MYSQL_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             New-EfCore-MigrationScript -Provider $ORACLE_PROVIDER -Project $project -StartupProject $startupProject -Context $Context
             return
