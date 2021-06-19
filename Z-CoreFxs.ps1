@@ -534,7 +534,6 @@ function Remove-EfCore-Migration {
         $Force
     )
     Install-EfCore-Tools
-    Stop-WhenIsDbProviderName -Value $Name
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
@@ -587,7 +586,6 @@ function Remove-EfCore-Database {
         $Context = ""
     )
     Install-EfCore-Tools
-    Stop-WhenIsDbProviderName -Value $Name
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
@@ -622,18 +620,19 @@ function Update-EfCore-Database {
         [System.String]
         [ValidateSet([DbProviderSet], IgnoreCase = $false, ErrorMessage = "Value `"{0}`" is invalid. Try one of: `"{1}`"")]
         $Provider = "All",
+        
         [Parameter(Mandatory = $true)]
         [System.String]
         $Project,
+        
         [Parameter(Mandatory = $true)]
         [System.String]
         $StartupProject,
-        [Parameter(Mandatory = $false)]
+
         [System.String]
         $Context = ""
     )
     Install-EfCore-Tools
-    Stop-WhenIsDbProviderName -Value $Name
 
     $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
     $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
