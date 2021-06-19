@@ -480,6 +480,13 @@ function Add-EfCore-Migration {
         $Context = ""
     )
     Install-EfCore-Tools
+    Stop-WhenIsDbProviderName -Value $Name
+
+    $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
+    $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
+    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$startupProjectFile" reference "$projectFile"
+
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -527,6 +534,13 @@ function Remove-EfCore-Migration {
         $Force
     )
     Install-EfCore-Tools
+    Stop-WhenIsDbProviderName -Value $Name
+
+    $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
+    $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
+    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$startupProjectFile" reference "$projectFile"
+
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -573,6 +587,13 @@ function Remove-EfCore-Database {
         $Context = ""
     )
     Install-EfCore-Tools
+    Stop-WhenIsDbProviderName -Value $Name
+
+    $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
+    $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
+    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$startupProjectFile" reference "$projectFile"
+
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -612,6 +633,13 @@ function Update-EfCore-Database {
         $Context = ""
     )
     Install-EfCore-Tools
+    Stop-WhenIsDbProviderName -Value $Name
+
+    $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
+    $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
+    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$startupProjectFile" reference "$projectFile"
+
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
@@ -650,6 +678,13 @@ function New-EfCore-MigrationScript {
         $Context = ""
     )
     Install-EfCore-Tools
+    Stop-WhenIsDbProviderName -Value $Name
+
+    $projectFile = "$(Get-Item -Path "$Project/*.csproj" | Split-Path -Leaf)"
+    $startupProjectFile = "$(Get-Item -Path "$StartupProject/*.csproj" | Split-Path -Leaf)" 
+    dotnet add "$startupProjectFile" package "Microsoft.EntityFrameworkCore.Design"
+    dotnet add "$startupProjectFile" reference "$projectFile"
+    
     switch ($Provider) {
         {$_ -in @($SQLSERVER_PROVIDER, $POSGRESQL_PROVIDER, $MYSQL_PROVIDER, $ORACLE_PROVIDER)} { 
             $Context = "$($Context)$($Provider)DbContext"
