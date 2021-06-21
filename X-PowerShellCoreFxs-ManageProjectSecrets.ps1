@@ -2,7 +2,7 @@
 param (
     [string]
     [ValidateSet("Edit", "Set", "List")]
-    $Action = "Edit",
+    $Action = "List",
     
     [string]
     $Editor = "code"
