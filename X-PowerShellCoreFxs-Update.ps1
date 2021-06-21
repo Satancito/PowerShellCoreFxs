@@ -39,13 +39,13 @@ if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
 $localJsonObject = Get-JsonObject $Z_CONFIG
 $lastJsonObject = Get-JsonObject "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG"
 
-Add-Member -MemberType NoteProperty -Name "DeprecatedFiles" -Value $lastJsonObject.DeprecatedFiles -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "CoreFiles" -Value $lastJsonObject.CoreFiles -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "LastSupportedFiles" -Value $lastJsonObject.Files -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "Version" -Value $lastJsonObject.Version -InputObject $localJsonObject -Force
 $localJsonObject.Files = ($null -eq $localJsonObject.Files ? $lastJsonObject.Files : $localJsonObject.Files)
 $files = ($localJsonObject.Files | Where-Object { ($_ -notin $lastJsonObject.DeprecatedFiles) -and ($_ -in $lastJsonObject.Files) })
 Add-Member -MemberType NoteProperty -Name "Files" -Value $files -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "CoreFiles" -Value $lastJsonObject.CoreFiles -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "DeprecatedFiles" -Value $lastJsonObject.DeprecatedFiles -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "LastSupportedFiles" -Value $lastJsonObject.Files -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "Version" -Value $lastJsonObject.Version -InputObject $localJsonObject -Force
 
 Set-JsonObject $localJsonObject $Z_CONFIG
 
