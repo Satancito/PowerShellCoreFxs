@@ -997,9 +997,33 @@ function Set-PersistentEnvironmentVariable {
 function Get-JsonObject {
     param (
         [String]
-        $Path
+        [ValidateNotNullOrEmpty]
+        [parameter(Mandatory = $true)]
+        $Filename
     )
-    return (Get-Content -Path $Path | ConvertFrom-Json)
+
+    if(Test-Path $Filename -PathType Leaf)
+    {
+        return (Get-Content -Path $Filename | ConvertFrom-Json)
+    }
+    
+    return ConvertFrom-Json $Filename
+}
+
+function Set-JsonObject {
+    param (
+        [object]
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty]
+        $Value,
+
+        [String]
+        [ValidateNotNullOrEmpty]
+        [parameter(Mandatory = $true)]
+        $Filename
+    )
+    
+    return ( ConvertTo-Json $Value | Set-Content $Filename)
 }
 
 function Get-ItemTree() {
