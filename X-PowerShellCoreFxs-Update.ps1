@@ -98,7 +98,7 @@ if ($RemoveUnused.IsPresent) {
     }
     else {
         if (Test-Path $file -PathType Leaf) {
-            Copy-Item -Path $file "./$_" -Force 
+            Copy-Item -Path $file -Destination $_ -Force 
             Write-PrettyKeyValue "Updating" "$_"
         }
         else {
