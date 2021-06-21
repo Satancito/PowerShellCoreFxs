@@ -1,4 +1,4 @@
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName="seta")]
 param (
     [Parameter(ParameterSetName = "seta")]
     [switch]
@@ -48,7 +48,7 @@ if ($Reset.IsPresent) {
 if(!($Run.IsPresent))
 {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
-    & pwsh -c { & "./$ME" }
+    & pwsh -c { & "./$ME" -Run -RemoveUnused:$RemoveUnused -RemoveDeprecated:$RemoveDeprecated }
     exit
 }
 
