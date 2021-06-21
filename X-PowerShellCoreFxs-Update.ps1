@@ -48,12 +48,10 @@ if ($Reset.IsPresent) {
 if(!($Run.IsPresent))
 {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
-    & pwsh -c { & "./$ME" -Run -RemoveUnused:$RemoveUnused -RemoveDeprecated:$RemoveDeprecated }
+    pwsh -Command "./$ME -Run $($RemoveDeprecated ? "-RemoveDeprecated" : [string]::Empty) $($RemoveUnused ? "-RemoveUnused" : [string]::Empty)"
     exit
 }
 
-"PASÓ"
-exit
 
 if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG" $Z_CONFIG -Force
