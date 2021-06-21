@@ -53,11 +53,15 @@ if ($RemoveDeprecated.IsPresent) {
 }
 
 ($localJsonObject.Files + $localJsonObject.CoreFiles) | ForEach-Object {
+    $Path = "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_"
     if ("$_".Equals($Z_CONFIG)) {
-        Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" $Z_CONFIG_LAST -Force 
+        Copy-Item -Path $Path $Z_CONFIG_LAST -Force 
     }
     else {
-        Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_" "./$_" -Force 
+        if(Test-Path $Path -PathType Leaf)
+        {
+            Copy-Item -Path $Path "./$_" -Force 
+        }
     }
     Write-PrettyKeyValue "Updating" "$_"
 
