@@ -44,6 +44,7 @@ if($RemoveDeprecated.IsPresent)
         if(Test-Path $_ -PathType Leaf)
         {
             Remove-Item $_ -Force
+            Write-PrettyKeyValue "Removed" "$_"
         }
     }
 }
