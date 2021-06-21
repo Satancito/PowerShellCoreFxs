@@ -48,7 +48,7 @@ if ($Reset.IsPresent) {
 if(!($Run.IsPresent))
 {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
-    & pwsh -c { ./$ME }
+    & pwsh -c { & "./$ME" }
     exit
 }
 
