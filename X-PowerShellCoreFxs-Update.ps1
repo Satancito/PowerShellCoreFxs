@@ -2,7 +2,11 @@
 param (
     [Parameter()]
     [switch]
-    $RemoveDeprecated
+    $RemoveDeprecated,
+
+    [Parameter()]
+    [switch]
+    $RemoveUnused
 )
 $ErrorActionPreference = "Stop"
 
@@ -29,7 +33,7 @@ $Z_CONFIG = "Z-Config.json"
 $Z_CONFIG_LAST = "Z-Config.Last.json"
 $ME = "X-PowerShellCoreFxs-Update.ps1"
 Set-GitRepository $PowerShellCoreFxs $Path 
-Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
+#Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
 
 if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG" $Z_CONFIG -Force
@@ -39,13 +43,13 @@ if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
 $localJsonObject = Get-JsonObject $Z_CONFIG
 $lastJsonObject = Get-JsonObject "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG"
 
+Add-Member -MemberType NoteProperty -Name "DeprecatedFiles" -Value $lastJsonObject.DeprecatedFiles -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "CoreFiles" -Value $lastJsonObject.CoreFiles -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "LastSupportedFiles" -Value $lastJsonObject.Files -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "Version" -Value $lastJsonObject.Version -InputObject $localJsonObject -Force
 $localJsonObject.Files = ($null -eq $localJsonObject.Files ? $lastJsonObject.Files : $localJsonObject.Files)
 $files = ($localJsonObject.Files | Where-Object { ($_ -notin $lastJsonObject.DeprecatedFiles) -and ($_ -in $lastJsonObject.Files) })
 Add-Member -MemberType NoteProperty -Name "Files" -Value $files -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "CoreFiles" -Value $lastJsonObject.CoreFiles -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "DeprecatedFiles" -Value $lastJsonObject.DeprecatedFiles -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "LastSupportedFiles" -Value $lastJsonObject.Files -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "Version" -Value $lastJsonObject.Version -InputObject $localJsonObject -Force
 
 Set-JsonObject $localJsonObject $Z_CONFIG
 
@@ -53,8 +57,16 @@ if ($RemoveDeprecated.IsPresent) {
     $localJsonObject.DeprecatedFiles | ForEach-Object {
         if (Test-Path $_ -PathType Leaf) {
             Remove-Item $_ -Force
-            Write-PrettyKeyValue "Removed" "$_"
+            Write-PrettyKeyValue "Removed deprecated" "$_"
         }
+    }
+}
+
+if($RemoveUnused.IsPresent)
+{
+    $lastJsonObject.Files | Where-Object { $_ -notin $localJsonObject.Files } | ForEach-Object {
+        Remove-Item $_ -Force
+        Write-PrettyKeyValue "Removed unused" "$_"
     }
 }
 
