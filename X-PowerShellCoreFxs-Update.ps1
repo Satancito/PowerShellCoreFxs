@@ -40,6 +40,7 @@ $Z_CONFIG = "Z-Config.json"
 $Z_CONFIG_LAST = "Z-Config.Last.json"
 $ME = "X-PowerShellCoreFxs-Update.ps1"
 
+Set-GitRepository $PowerShellCoreFxs $Path 
 if ($Reset.IsPresent) {
     Remove-Item $Z_CONFIG -Force  -ErrorAction Ignore
 }
@@ -53,7 +54,6 @@ if(!($Run.IsPresent))
 
 "PASÓ"
 exit
-Set-GitRepository $PowerShellCoreFxs $Path 
 
 if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG" $Z_CONFIG -Force
