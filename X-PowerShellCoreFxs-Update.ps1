@@ -41,7 +41,7 @@ $lastJsonObject = Get-JsonObject "$Path/$(Get-VariableName $PowerShellCoreFxs)/$
 
 Add-Member -MemberType NoteProperty -Name "DeprecatedFiles" -Value $lastJsonObject.DeprecatedFiles -InputObject $localJsonObject -Force
 Add-Member -MemberType NoteProperty -Name "CoreFiles" -Value $lastJsonObject.CoreFiles -InputObject $localJsonObject -Force
-Add-Member -MemberType NoteProperty -Name "SupportedFiles" -Value $lastJsonObject.Files -InputObject $localJsonObject -Force
+Add-Member -MemberType NoteProperty -Name "LastSupportedFiles" -Value $lastJsonObject.Files -InputObject $localJsonObject -Force
 Add-Member -MemberType NoteProperty -Name "Version" -Value $lastJsonObject.Version -InputObject $localJsonObject -Force
 
 $localJsonObject.Files = ($null -eq $localJsonObject.Files ? $lastJsonObject.Files : $localJsonObject.Files)
@@ -57,6 +57,7 @@ if ($RemoveDeprecated.IsPresent) {
     }
 }
 
+$x = ($localJsonObject.Files | Where-Object { $_ -notin $localJsonObject.DeprecatedFiles }).ToArray()
 ($localJsonObject.Files + $localJsonObject.CoreFiles) | ForEach-Object {
     $file = "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_"
     if ("$_".Equals($Z_CONFIG)) {
