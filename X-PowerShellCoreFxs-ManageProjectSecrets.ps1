@@ -20,7 +20,7 @@ $SecretsFileName = "$(Get-UserHome)/$ProjectName.Secrets.json"
 
 if ($Edit.IsPresent) { 
     Write-PrettyKeyValue "███ Opening secrets for project" "`"$($ProjectName)`""
-    Write-PrettyKeyValue "SecretFilename" "$SecretsFileName"
+    Write-PrettyKeyValue "SecretFilename" "$SecretsFileName" -LabelForegroudColor Blue
 
     if (!(Test-Path -Path $secretsFileName -PathType Leaf)) {
         New-Item -Path $secretsFileName -Value "{}" | Out-Null
@@ -32,7 +32,7 @@ if ($Edit.IsPresent) {
 if ($Set.IsPresent) {  
 
     Write-PrettyKeyValue "███ Setting up secrets for project" "`"$($ProjectName)`""
-    Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName"
+    Write-PrettyKeyValue "SecretFilename" "$SecretsFileName" -LabelForegroudColor Blue
 
     if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
         Write-Host
@@ -52,5 +52,6 @@ if ($Set.IsPresent) {
 }
     
 Write-InfoBlue "█ Listing secrets"
+Write-PrettyKeyValue "SecretFilename" "$SecretsFileName" -LabelForegroudColor Blue
 dotnet user-secrets list
 
