@@ -1,8 +1,11 @@
 {
   "Files": [
-    "X-PowerShellCoreFxs-EditProjectSecrets.ps1",
     "X-PowerShellCoreFxs-PublishProjectPackage.ps1",
     "X-PowerShellCoreFxs-PushProjectToRemote.ps1",
+    "X-PowerShellCoreFxs-ManageProjectSecrets.ps1"
+  ],
+  "DeprecatedFiles": [
+    "X-PowerShellCoreFxs-EditProjectSecrets.ps1",
     "X-PowerShellCoreFxs-SetProjectSecrets.ps1"
   ],
   "CoreFiles": [
@@ -10,5 +13,5 @@
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
-  "Version": "1.0.89"
+  "Version": "1.0.90"
 }
