@@ -1,12 +1,19 @@
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(ParameterSetName = "seta")]
     [switch]
     $RemoveDeprecated,
 
-    [Parameter()]
+    [Parameter(ParameterSetName = "seta")]
     [switch]
-    $RemoveUnused
+    $RemoveUnused,
+
+    [Parameter(ParameterSetName = "setb")]
+    [switch]
+    $Reset,
+
+    [switch]
+    $Run
 )
 $ErrorActionPreference = "Stop"
 
@@ -32,8 +39,21 @@ if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellC
 $Z_CONFIG = "Z-Config.json"
 $Z_CONFIG_LAST = "Z-Config.Last.json"
 $ME = "X-PowerShellCoreFxs-Update.ps1"
+
+if ($Reset.IsPresent) {
+    Remove-Item $Z_CONFIG -Force  -ErrorAction Ignore
+}
+
+if(!($Run.IsPresent))
+{
+    Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
+    & pwsh -c { ./$ME }
+    exit
+}
+
+"PASÓ"
+exit
 Set-GitRepository $PowerShellCoreFxs $Path 
-#Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
 
 if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG" $Z_CONFIG -Force
@@ -56,16 +76,15 @@ Set-JsonObject $localJsonObject $Z_CONFIG
 if ($RemoveDeprecated.IsPresent) {
     $localJsonObject.DeprecatedFiles | ForEach-Object {
         if (Test-Path $_ -PathType Leaf) {
-            Remove-Item $_ -Force
+            Remove-Item $_ -Force -ErrorAction Ignore
             Write-PrettyKeyValue "Removed deprecated" "$_"
         }
     }
 }
 
-if($RemoveUnused.IsPresent)
-{
+if ($RemoveUnused.IsPresent) {
     $lastJsonObject.Files | Where-Object { $_ -notin $localJsonObject.Files } | ForEach-Object {
-        Remove-Item $_ -Force
+        Remove-Item $_ -Force  -ErrorAction Ignore
         Write-PrettyKeyValue "Removed unused" "$_"
     }
 }
@@ -77,8 +96,7 @@ if($RemoveUnused.IsPresent)
         Write-PrettyKeyValue "Updating" "$_"
     }
     else {
-        if(Test-Path $file -PathType Leaf)
-        {
+        if (Test-Path $file -PathType Leaf) {
             Copy-Item -Path $file "./$_" -Force 
             Write-PrettyKeyValue "Updating" "$_"
         }
