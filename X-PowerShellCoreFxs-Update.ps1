@@ -27,7 +27,9 @@ if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellC
 
 $Z_CONFIG = "Z-Config.json"
 $Z_CONFIG_LAST = "Z-Config.Last.json"
+$ME = "X-PowerShellCoreFxs-Update.ps1"
 Set-GitRepository $PowerShellCoreFxs $Path 
+Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
 
 if (!(Test-Path $Z_CONFIG -PathType Leaf)) {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$Z_CONFIG" $Z_CONFIG -Force

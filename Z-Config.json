@@ -9,9 +9,8 @@
     "X-PowerShellCoreFxs-SetProjectSecrets.ps1"
   ],
   "CoreFiles": [
-    "X-PowershellCoreFxs-Update.ps1",
     "Z-CoreFxs.ps1",
     "Z-Config.json"
   ],
-  "Version": "1.0.98"
+  "Version": "1.0.99"
 }
