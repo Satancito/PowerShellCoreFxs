@@ -1,4 +1,4 @@
-[CmdletBinding(DefaultParameterSetName="seta")]
+[CmdletBinding(DefaultParameterSetName = "seta")]
 param (
     [Parameter(ParameterSetName = "seta")]
     [switch]
@@ -27,8 +27,7 @@ Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 Write-Host
 $PowerShellCoreFxs = "https://github.com/Satancito/PowerShellCoreFxs.git"
 $Path = "$X_TEMP_DIR"
-if(!($Run.IsPresent))
-{
+if (!($Run.IsPresent)) {
     Write-InfoMagenta "███ Update - PowerShellCoreFxs Scripts " 
     Set-GitRepository $PowerShellCoreFxs $Path 
 }
@@ -48,8 +47,7 @@ if ($Reset.IsPresent) {
     Remove-Item $Z_CONFIG -Force  -ErrorAction Ignore
 }
 
-if(!($Run.IsPresent))
-{
+if (!($Run.IsPresent)) {
     Copy-Item -Path "$Path/$(Get-VariableName $PowerShellCoreFxs)/$ME" $ME -Force
     pwsh -Command "./$ME -Run $($RemoveDeprecated ? "-RemoveDeprecated" : [string]::Empty) $($RemoveUnused ? "-RemoveUnused" : [string]::Empty)"
     exit
@@ -85,8 +83,10 @@ if ($RemoveDeprecated.IsPresent) {
 
 if ($RemoveUnused.IsPresent) {
     $lastJsonObject.Files | Where-Object { $_ -notin $localJsonObject.Files } | ForEach-Object {
-        Remove-Item $_ -Force  -ErrorAction Ignore
-        Write-PrettyKeyValue "Removed unused" "$_"
+        if (Test-Path $_ -PathType Leaf) {
+            Remove-Item $_ -Force  -ErrorAction Ignore
+            Write-PrettyKeyValue "Removed unused" "$_"
+        }
     }
 }
 
