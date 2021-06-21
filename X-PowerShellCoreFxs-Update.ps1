@@ -25,12 +25,16 @@ if (!(Test-Path "./Z-CoreFxs.ps1" -PathType Leaf)) {
 Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
 
 Write-Host
-Write-InfoMagenta "███ Update - PowerShellCoreFxs Scripts " 
-
-
-
 $PowerShellCoreFxs = "https://github.com/Satancito/PowerShellCoreFxs.git"
 $Path = "$X_TEMP_DIR"
+if(!($Run.IsPresent))
+{
+    Write-InfoMagenta "███ Update - PowerShellCoreFxs Scripts " 
+    Set-GitRepository $PowerShellCoreFxs $Path 
+}
+
+
+
 if ("$(Get-Location | Split-Path -Leaf)".Equals("$(Get-VariableName $PowerShellCoreFxs)")) {
     Write-Warning -Message "WARNING. Cannot overwrite original directory of scripts."
     exit
@@ -40,7 +44,6 @@ $Z_CONFIG = "Z-Config.json"
 $Z_CONFIG_LAST = "Z-Config.Last.json"
 $ME = "X-PowerShellCoreFxs-Update.ps1"
 
-Set-GitRepository $PowerShellCoreFxs $Path 
 if ($Reset.IsPresent) {
     Remove-Item $Z_CONFIG -Force  -ErrorAction Ignore
 }
