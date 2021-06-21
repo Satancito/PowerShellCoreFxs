@@ -56,15 +56,18 @@ if ($RemoveDeprecated.IsPresent) {
     $Path = "$Path/$(Get-VariableName $PowerShellCoreFxs)/$_"
     if ("$_".Equals($Z_CONFIG)) {
         Copy-Item -Path $Path $Z_CONFIG_LAST -Force 
+        Write-PrettyKeyValue "Updating" "$_"
     }
     else {
         if(Test-Path $Path -PathType Leaf)
         {
             Copy-Item -Path $Path "./$_" -Force 
+            Write-PrettyKeyValue "Updating" "$_"
+        }
+        else {
+            Write-PrettyKeyValue "Ignored" "$_"
         }
     }
-    Write-PrettyKeyValue "Updating" "$_"
-
 }
 
 Write-InfoMagenta "███ End - Update - PowerShellCoreFxs Scripts " 
