@@ -1,4 +1,4 @@
-[CmdletBinding(DefaultParameterSetName = "seta")]
+[CmdletBinding(DefaultParameterSetName = "setc")]
 param (
     [Parameter(ParameterSetName = "seta")]
     [switch]
@@ -7,51 +7,32 @@ param (
     [Parameter(ParameterSetName = "setb")]
     [switch]
     $Set,
+
+    [Parameter(ParameterSetName = "setc")]
+    [switch]
+    $List,
     
     [string]
     [Parameter(ParameterSetName = "seta")]
-    $Editor = "code"
-)
+    $Editor = "code",
 
+    [string]
+    [Parameter()]
+    $Project = "*.csproj"
+)
+    
 $ErrorActionPreference = "Stop"
-Import-Module -Name "$(Get-Item "./Z-CoreFxs*.ps1")" -Force -NoClobber
-$ProjectName = "$(Get-Item -Path "./*.csproj" | Split-Path -Leaf)"
-$SecretsFileName = "$(Get-UserHome)/$ProjectName.Secrets.json"
+Import-Module -Name "$(Get-Item "Z-CoreFxs*.ps1")" -Force -NoClobber
 
 if ($Edit.IsPresent) { 
-    Write-PrettyKeyValue "███ Opening secrets for project" "`"$($ProjectName)`""
-    Write-PrettyKeyValue "SecretFilename" "$SecretsFileName" -LabelForegroudColor Blue
-
-    if (!(Test-Path -Path $secretsFileName -PathType Leaf)) {
-        New-Item -Path $secretsFileName -Value "{}" | Out-Null
-    }
-    & $editor $SecretsFileName 
+    Edit-ProjectSecrets -Project $Project -Editor $Editor
     return
 }
 
 if ($Set.IsPresent) {  
-
-    Write-PrettyKeyValue "███ Setting up secrets for project" "`"$($ProjectName)`""
-    Write-PrettyKeyValue "SecretFilename" "$SecretsFileName" -LabelForegroudColor Blue
-
-    if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
-        Write-Host
-        Write-InfoBlue "█ Creating secrets file"
-        Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName"
-        New-Item -Path $SecretsFileName -Value "{}"
-    }
-
-    Write-Host
-    Write-InfoBlue "█ Adding secrets" 
-    Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName"
-    dotnet add "$ProjectName" package "Microsoft.Extensions.Configuration.UserSecrets"
-    dotnet user-secrets init
-    dotnet user-secrets clear
-    Get-Content "$SecretsFileName" | dotnet user-secrets set
-    return   
+    Set-ProjectSecrets -Project $Project
+    return
 }
     
-Write-InfoBlue "█ Listing secrets"
-Write-PrettyKeyValue "SecretFilename" "$SecretsFileName" -LabelForegroudColor Blue
-dotnet user-secrets list
+Show-ProjectSecrets -Project $Project
 

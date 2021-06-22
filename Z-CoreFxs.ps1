@@ -1122,6 +1122,105 @@ function Set-GitRepository {
     
 }
 
+function Set-ProjectSecrets {
+    param (
+        [string]
+        [Parameter()]
+        $Project = "*.csproj"
+    )
+    
+    $projectItem = Get-Item -Path $Project
+    $projectFilename = $projectItem.FullName
+    Write-PrettyKeyValue "██ Setting up secrets for project" "`"$projectFilename`"" -LabelForegroudColor Blue
+    
+    $REFERENCE = "Microsoft.Extensions.Configuration.UserSecrets"
+    Write-InfoBlue "█ Adding package reference to project"
+    Write-PrettyKeyValue "Reference" $REFERENCE -LabelForegroudColor Blue
+    dotnet add $projectFilename package $REFERENCE
+    
+    Write-InfoBlue "█ Initializing secrets"
+    dotnet user-secrets init --project $projectFilename
+    [System.Xml.Linq.XDocument] $xml = [System.Xml.Linq.XDocument]::Parse((Get-Content -Path $projectFilename -Raw))
+    $secretsId = $xml.Root.Elements("PropertyGroup").Elements("UserSecretsId").Value;
+    Write-PrettyKeyValue "UserSecretsId" $secretsId -LabelForegroudColor Blue
+    
+    
+    $SecretsFileName = "$(Get-UserHome)/$($projectItem.Name).$secretsId.Secrets.json"
+    if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
+        Write-InfoBlue "█ Creating secrets file"
+        Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName" -LabelForegroudColor Blue
+        New-Item -Path $SecretsFileName -Value "{}"
+    }
+
+    Write-InfoBlue "█ Setting up secrets" 
+    Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName" -LabelForegroudColor Blue
+    dotnet user-secrets clear --project $projectFilename
+    Get-Content "$SecretsFileName" | dotnet user-secrets set --project $projectFilename
+    dotnet user-secrets list --project $projectFilename
+}
+
+function Edit-ProjectSecrets {
+    param (
+        [string]
+        [Parameter()]
+        $Project = "*.csproj",
+
+        [string]
+        [Parameter()]
+        $Editor = "code"
+    )
+    
+    $projectItem = Get-Item -Path $Project
+    $projectFilename = $projectItem.FullName
+    Write-PrettyKeyValue "██ Opening secrets for project" "`"$projectFilename`"" -LabelForegroudColor Blue
+    
+    $REFERENCE = "Microsoft.Extensions.Configuration.UserSecrets"
+    Write-InfoBlue "█ Adding package reference to project"
+    Write-PrettyKeyValue "Reference" $REFERENCE -LabelForegroudColor Blue
+    dotnet add $projectFilename package $REFERENCE
+    
+    Write-InfoBlue "█ Initializing secrets"
+    dotnet user-secrets init --project $projectFilename
+    [System.Xml.Linq.XDocument] $xml = [System.Xml.Linq.XDocument]::Parse((Get-Content -Path $projectFilename -Raw))
+    $secretsId = $xml.Root.Elements("PropertyGroup").Elements("UserSecretsId").Value;
+    Write-PrettyKeyValue "UserSecretsId" $secretsId -LabelForegroudColor Blue
+
+    $SecretsFileName = "$(Get-UserHome)/$($projectItem.Name).$secretsId.Secrets.json"
+    if (!(Test-Path -Path $SecretsFileName -PathType Leaf)) {
+        Write-InfoBlue "█ Creating secrets file"
+        Write-PrettyKeyValue "SecretsFilename" "$SecretsFileName" -LabelForegroudColor Blue
+        New-Item -Path $SecretsFileName -Value "{}"
+    }
+
+    & $editor $SecretsFileName 
+}
+
+function Show-ProjectSecrets {
+    param (
+        [string]
+        [Parameter()]
+        $Project = "*.csproj"
+    )
+    
+    $projectItem = Get-Item -Path $Project
+    $projectFilename = $projectItem.FullName
+    Write-PrettyKeyValue "██ Listing secrets for project" "`"$projectFilename`"" -LabelForegroudColor Blue
+    
+    $REFERENCE = "Microsoft.Extensions.Configuration.UserSecrets"
+    Write-InfoBlue "█ Adding package reference to project"
+    Write-PrettyKeyValue "Reference" $REFERENCE -LabelForegroudColor Blue
+    dotnet add $projectFilename package $REFERENCE
+    
+    Write-InfoBlue "█ Initializing secrets"
+    dotnet user-secrets init --project $projectFilename
+    [System.Xml.Linq.XDocument] $xml = [System.Xml.Linq.XDocument]::Parse((Get-Content -Path $projectFilename -Raw))
+    $secretsId = $xml.Root.Elements("PropertyGroup").Elements("UserSecretsId").Value;
+    Write-PrettyKeyValue "UserSecretsId" $secretsId -LabelForegroudColor Blue
+    
+    Write-InfoBlue "█ Secrets"
+    dotnet user-secrets list --project $projectFilename
+}
+
 Set-GlobalConstant -Name "X_TEMP_DIR_NAME" -Value ".X-TEMP"
 Set-GlobalConstant -Name "X_TEMP_DIR" -Value "$(Get-UserHome)/$X_TEMP_DIR_NAME"
 
